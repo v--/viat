@@ -36,11 +36,13 @@ class TomlAttributeStorageConnection(ViatAttributeStorageConnection):
 
     payload: tomlkit.TOMLDocument
     validator: Callable[[Json], None] | None
+    has_mutations: bool
     _active_managers: MutableSet[pathlib.Path]
 
     def __init__(self, payload: tomlkit.TOMLDocument, validator: Callable[[Json], None] | None) -> None:
         self.payload = payload
         self.validator = validator
+        self.has_mutations = False
         self._locked = set[pathlib.Path]()
 
         if validator:
@@ -91,6 +93,7 @@ class TomlAttributeStorageConnection(ViatAttributeStorageConnection):
 
         payload = stored_table or tomlkit.table()
         self._locked.add(npath)
+        self.has_mutations = True
 
         try:
             yield TomlAttributeMutator(npath, payload)

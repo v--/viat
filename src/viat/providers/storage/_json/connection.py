@@ -32,11 +32,13 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
 
     payload: MutableJsonObject
     validator: Callable[[Json], None] | None
+    has_mutations: bool
     _locked: MutableSet[pathlib.Path]
 
     def __init__(self, payload: MutableMappingProtocol[str, Json], validator: Callable[[Json], None] | None) -> None:
         self.payload = payload
         self.validator = validator
+        self.has_mutations = False
         self._locked = set[pathlib.Path]()
 
         if validator:
@@ -87,6 +89,7 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
 
         payload = stored_data or {}
         self._locked.add(npath)
+        self.has_mutations = True
 
         try:
             yield JsonAttributeMutator(npath, payload)

@@ -67,9 +67,16 @@ class JsonAttributeStorage(ViatAttributeStorage):
         if not self._active_conn:
             raise ViatAttributeStorageError('This storage has no active connection')
 
+        if not self._active_conn.has_mutations:
+            self._active_conn = None
+            return
+
         try:
             json_string = json.dumps(self._active_conn.payload, indent=self.config.indent)
         except json.JSONDecodeError as err:
             raise ViatAttributeStorageError('Could not serialize the stored attribute contents') from err
+        finally:
+            self._active_conn = None
 
         self.config.storage_path.write_text(json_string, encoding='utf-8')
+

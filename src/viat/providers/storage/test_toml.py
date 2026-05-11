@@ -112,6 +112,18 @@ class TestTomlStorage:
 
         assert config_path.read_text() == initial_contents
 
+    def test_not_saving_without_mutation(self, temp_directory: pathlib.Path) -> None:
+        config_path = temp_directory.joinpath('config.toml')
+        config_path.touch()
+        expected_mod_time = config_path.stat().st_mtime
+        storage = TomlAttributeStorage(TomlAttributeStorageConfig(config_path))
+
+        with storage as conn, conn.get_reader('test') as _reader:
+            ...
+
+        actual_mod_time = config_path.stat().st_mtime
+        assert actual_mod_time == expected_mod_time
+
     def test_inaccessible_config(self, temp_directory: pathlib.Path) -> None:
         config_path = temp_directory.joinpath('config.toml')
         config_path.touch()
