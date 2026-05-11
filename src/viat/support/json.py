@@ -1,7 +1,7 @@
 """Python type hints for JSON values."""
 
 from collections.abc import Mapping, Sequence
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ type AtomicJson = bool | float | str | None
 
 if TYPE_CHECKING:
     @runtime_checkable
-    class JsonArray(SequenceProtocol['Json'], Protocol):
+    class JsonArray(SequenceProtocol[Any, 'Json'], Protocol):
         """Protocol for immutable JSON arrays.
 
         The protocol mimics `Sequence[Json]` during type checking.
@@ -49,7 +49,7 @@ type Json = AtomicJson | JsonArray | JsonObject
 
 if TYPE_CHECKING:
     @runtime_checkable
-    class MutableJsonArray(MutableSequenceProtocol['MutableJson'], Protocol):
+    class MutableJsonArray(MutableSequenceProtocol[Any, 'MutableJson'], Protocol):
         """Protocol for mutable JSON arrays.
 
         The protocol mimics `MuableSequence[Json]` during type checking.
