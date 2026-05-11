@@ -5,6 +5,9 @@ build:
   tools:
     python: latest
 
+  apt_packages:
+  - man-db
+
   jobs:
     build:
       html:
