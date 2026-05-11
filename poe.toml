@@ -1,0 +1,26 @@
+[tasks.test]
+cmd = "pytest"
+
+[tasks.lint]
+sequence = [
+  { cmd = "ruff check $path" },
+  { cmd = "mypy $path" },
+]
+args = [
+  { name = "path", positional = true, default = "" }
+]
+
+[tasks.docs-server]
+cmd = "zensical serve"
+
+[tasks.docs-aux]
+sequence = [
+  { script = "src.helpers.docs:build_man_page" },
+  { script = "src.helpers.docs:build_usage_md" },
+]
+
+[tasks.docs-build]
+sequence = [
+  { ref = "docs-aux" },
+  { cmd = "zensical build" },
+]

@@ -20,7 +20,7 @@ from viat.support.json import Json
 
 def _recursively_join_error_messages(err: ViatException) -> str:
     if isinstance(err.__cause__, ViatException):
-        return f'{err}. {get_error_string(err.__cause__)}.'
+        return f'{err}. {get_error_string(err.__cause__)}'
 
     return f'{err}.'
 

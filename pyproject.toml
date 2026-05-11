@@ -35,6 +35,7 @@ viat = "viat.cli:viat"
 
 [dependency-groups]
 dev = [
+  "click-man (>=0.5.1)",
   "mkdocstrings-python (>=2)",
   "mypy (>=2)",
   "poethepoet (>=0.45)",
@@ -55,31 +56,25 @@ build-backend = "uv_build"
 resolution = "lowest-direct"
 
 # poe
-[tool.poe.tasks.test]
-cmd = "pytest"
-
-[tool.poe.tasks.lint]
-sequence = [
-  { cmd = "ruff check $path" },
-  { cmd = "mypy $path" },
-]
-args = [
-  { name = "path", positional = true, default = "" }
-]
-
-[tool.poe.tasks.docs]
-cmd = "zensical"
+[tool.poe]
+include = "./poe.toml"
 
 # ruff
 [tool.ruff]
 extend = ".venv/share/ruff/ruff.ivasilev.toml"
 
+[tool.ruff.lint.extend-per-file-ignores]
+"src/helpers/*.py" = [
+  "D1", # undocumented-*
+]
+
 # mypy
 [tool.mypy]
-packages = ["viat"]
+packages = ["viat", "helpers"]
 
 [[tool.mypy.overrides]]
 module = [
-  "fastjsonschema.*"
+  "click_man.*",
+  "fastjsonschema.*",
 ]
 ignore_missing_imports = true

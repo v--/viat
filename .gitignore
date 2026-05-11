@@ -7,3 +7,4 @@ __pycache__
 
 # Builds (including docs)
 dist/
+docs/usage.md
