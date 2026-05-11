@@ -1,0 +1,19 @@
+version: 2
+
+build:
+  os: ubuntu-24.04
+  tools:
+    python: latest
+
+  jobs:
+    build:
+      html:
+        - uv run poe docs-build
+    post_build:
+      - mkdir --parents $READTHEDOCS_OUTPUT/html/
+      - cp --recursive dist/docs/* $READTHEDOCS_OUTPUT/html/
+
+python:
+  install:
+    - method: uv
+      command: sync

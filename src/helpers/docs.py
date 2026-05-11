@@ -17,7 +17,7 @@ ROOT = pathlib.Path(__file__).parent.parent.parent
 def build_man_page() -> None:
     version = importlib.metadata.version('viat')
     date_str = extract_date_from_changelog(version)
-    pathlib.Path('dist/man').mkdir(exist_ok=True)
+    pathlib.Path('dist/man').mkdir(parents=True, exist_ok=True)
     extracted_readme_usage = extract_usage_from_readme(only_cli=True)
 
     # The following code is an variation of the generate_man_page function from
