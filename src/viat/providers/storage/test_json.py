@@ -14,7 +14,7 @@ class TestJsonStorage:
         config_path = temp_directory.joinpath('config.json')
         storage = JsonAttributeStorage(JsonAttributeStorageConfig(config_path))
 
-        with storage as conn, conn.get_mutator(pathlib.Path('table')) as mut:
+        with storage as conn, conn.get_mutator('table') as mut:
             mut['key'] = 'value'
 
         expected_contents = json.dumps({'table': {'key': 'value'}})
@@ -67,5 +67,5 @@ class TestJsonStorage:
         storage = JsonAttributeStorage(JsonAttributeStorageConfig(config_path, schema_path))
 
         with pytest.raises(ViatValidationError):  # noqa: SIM117
-            with storage as conn, conn.get_mutator(pathlib.Path('table')) as mut:
+            with storage as conn, conn.get_mutator('table') as mut:
                 mut['key'] = 3

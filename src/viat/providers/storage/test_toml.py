@@ -18,7 +18,7 @@ class TestTomlStorage:
         config_path = temp_directory.joinpath('config.toml')
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(config_path))
 
-        with storage as conn, conn.get_mutator(pathlib.Path('table')) as mut:
+        with storage as conn, conn.get_mutator('table') as mut:
             mut['key'] = 'value'
 
         expected_contents = dedent("""\
@@ -42,7 +42,7 @@ class TestTomlStorage:
         config_path = temp_directory.joinpath('config.toml')
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(config_path))
 
-        with storage as conn, conn.get_mutator(pathlib.Path('table')) as mut:
+        with storage as conn, conn.get_mutator('table') as mut:
             mut['key'] = 'value'
 
         expected_contents = dedent("""\
@@ -64,7 +64,7 @@ class TestTomlStorage:
         config_path.write_text(initial_contents)
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(config_path))
 
-        with storage as conn, conn.get_mutator(pathlib.Path('table')) as mut:
+        with storage as conn, conn.get_mutator('table') as mut:
             mut['key'] = 'new_value'
 
         expected_contents = dedent("""\
@@ -86,7 +86,7 @@ class TestTomlStorage:
         config_path.write_text(initial_contents)
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(config_path))
 
-        with storage as conn, conn.get_mutator(pathlib.Path('table')) as mut:
+        with storage as conn, conn.get_mutator('table') as mut:
             del mut['key']
 
         assert config_path.read_text() == ''
@@ -188,5 +188,5 @@ class TestTomlStorage:
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(config_path, schema_path))
 
         with pytest.raises(ViatValidationError):  # noqa: SIM117
-            with storage as conn, conn.get_mutator(pathlib.Path('table')) as mut:
+            with storage as conn, conn.get_mutator('table') as mut:
                 mut['key'] = 3

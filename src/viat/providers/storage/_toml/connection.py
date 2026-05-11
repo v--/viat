@@ -58,44 +58,48 @@ class TomlAttributeStorageConnection(ViatAttributeStorageConnection):
                         )
 
     @contextlib.contextmanager
-    def get_reader(self, path: pathlib.Path) -> Generator[TomlAttributeReader]:
-        if path in self._locked:
-            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {path.as_posix()!r}')
+    def get_reader(self, path: pathlib.Path | str) -> Generator[TomlAttributeReader]:
+        npath = pathlib.Path(path)
 
-        stored_table = self.payload.get(path.as_posix())
+        if npath in self._locked:
+            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {npath.as_posix()!r}')
+
+        stored_table = self.payload.get(npath.as_posix())
 
         if stored_table is not None and not isinstance(stored_table, tomlkit.items.Table):
-            raise ViatMalformedStoredDataError(path)
+            raise ViatMalformedStoredDataError(npath)
 
         payload = stored_table or tomlkit.table()
-        self._locked.add(path)
+        self._locked.add(npath)
 
         try:
-            yield TomlAttributeReader(path, payload)
+            yield TomlAttributeReader(npath, payload)
         finally:
-            self._locked.remove(path)
+            self._locked.remove(npath)
 
     @contextlib.contextmanager
-    def get_mutator(self, path: pathlib.Path) -> Generator[TomlAttributeMutator]:
-        if path in self._locked:
-            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {path.as_posix()!r}')
+    def get_mutator(self, path: pathlib.Path | str) -> Generator[TomlAttributeMutator]:
+        npath = pathlib.Path(path)
 
-        stored_table = self.payload.get(path.as_posix())
+        if npath in self._locked:
+            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {npath.as_posix()!r}')
+
+        stored_table = self.payload.get(npath.as_posix())
 
         if stored_table is not None and not isinstance(stored_table, tomlkit.items.Table):
-            raise ViatMalformedStoredDataError(path)
+            raise ViatMalformedStoredDataError(npath)
 
         payload = stored_table or tomlkit.table()
-        self._locked.add(path)
+        self._locked.add(npath)
 
         try:
-            yield TomlAttributeMutator(path, payload)
+            yield TomlAttributeMutator(npath, payload)
         finally:
-            self._locked.remove(path)
+            self._locked.remove(npath)
 
         if len(payload) == 0:
             if stored_table is not None:
-                del self.payload[path.as_posix()]
+                del self.payload[npath.as_posix()]
 
             return
 
@@ -103,9 +107,9 @@ class TomlAttributeStorageConnection(ViatAttributeStorageConnection):
             try:
                 self.validator(toml_to_json(payload))
             except fastjsonschema.JsonSchemaValueException as err:
-                raise ViatValidationError(path) from err
+                raise ViatValidationError(npath) from err
 
-        self.payload[path.as_posix()] = payload
+        self.payload[npath.as_posix()] = payload
 
     @override
     def iter_known_paths(self) -> Iterable[pathlib.Path]:

@@ -15,7 +15,6 @@ Refer to `viat(1)` for more details.
 The following sets a virtual attribute for `file.md` and saves it in `.viat/storage.toml`:
 
     vault = Vault.locate('.')
-    path = pathlib.Path('file.md')
 
-    with vault.storage as conn, conn.get_mutator(path) as mut:
-        mut['attr'] = 'value'
+    with vault.storage as conn, conn.get_mutator('photo.jpg') as mut:
+        mut['origin'] = 'photo.dmg'

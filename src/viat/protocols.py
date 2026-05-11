@@ -51,7 +51,7 @@ class ViatAttributeStorageConnection(Protocol):
         Once the context manager exits, the connection validates the update.
     """
 
-    def get_reader(self, path: pathlib.Path) -> AbstractContextManagerProtocol[ViatAttributeReader]:
+    def get_reader(self, path: pathlib.Path | str) -> AbstractContextManagerProtocol[ViatAttributeReader]:
         """Create a context manager that produces an attribute reader.
 
         Args:
@@ -62,7 +62,7 @@ class ViatAttributeStorageConnection(Protocol):
         """
         ...
 
-    def get_mutator(self, path: pathlib.Path) -> AbstractContextManagerProtocol[ViatAttributeMutator]:
+    def get_mutator(self, path: pathlib.Path | str) -> AbstractContextManagerProtocol[ViatAttributeMutator]:
         """Create a context manager that produces an attribute mutator.
 
         Upon exiting, the context manager must validate the state of the mutator.

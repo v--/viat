@@ -60,7 +60,7 @@ class TestGet:
     def test_valid(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
         print(list(vault_with_readme.tracker.iter_paths()))
 
-        with vault_with_readme.storage as conn, conn.get_mutator(pathlib.Path('README.md')) as mut:
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
             mut['key'] = 'value'
 
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
@@ -69,7 +69,7 @@ class TestGet:
             assert result.stderr == ''
 
     def test_raw(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
-        with vault_with_readme.storage as conn, conn.get_mutator(pathlib.Path('README.md')) as mut:
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
             mut['key'] = 'value'
 
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
@@ -94,7 +94,7 @@ class TestGet:
 
         vault_with_readme = ViatVault(temp_directory)
 
-        with vault_with_readme.storage as conn, conn.get_mutator(pathlib.Path('README.md')) as mut:
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
             mut['key'] = 'value'
 
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
@@ -103,7 +103,7 @@ class TestGet:
             assert result.stderr == "Warning: File 'README.md' is not being tracked.\n"
 
     def test_path_relativization(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
-        with vault_with_readme.storage as conn, conn.get_mutator(pathlib.Path('README.md')) as mut:
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
             mut['key'] = 'value'
 
         absolute_path = vault_with_readme.resolver.get_root().absolute().joinpath('README.md').as_posix()
@@ -120,7 +120,7 @@ class TestGet:
             assert result.stderr == "Error: Attribute 'key' has not been set for 'README.md'.\n"
 
     def test_invalid_stored(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
-        with vault_with_readme.storage as conn, conn.get_mutator(pathlib.Path('README.md')) as mut:
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
             mut['key'] = 'value'
 
         schema_path = vault_with_readme.resolver.get_viat().joinpath('schema.json')
@@ -145,7 +145,7 @@ class TestGet:
 
 class TestGetAll:
     def test_valid(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
-        with vault_with_readme.storage as conn, conn.get_mutator(pathlib.Path('README.md')) as mut:
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
             mut['key1'] = 'value'
             mut['key2'] = 3
 
@@ -162,7 +162,7 @@ class TestSet:
             assert result.stdout == '{"key": "value"}\n'
             assert result.stderr == ''
 
-        with vault_with_readme.storage as conn, conn.get_reader(pathlib.Path('README.md')) as reader:
+        with vault_with_readme.storage as conn, conn.get_reader('README.md') as reader:
             assert reader['key'] == 'value'
 
     def test_raw(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
@@ -171,7 +171,7 @@ class TestSet:
             assert result.stdout == '{"key": "value"}\n'
             assert result.stderr == ''
 
-        with vault_with_readme.storage as conn, conn.get_reader(pathlib.Path('README.md')) as reader:
+        with vault_with_readme.storage as conn, conn.get_reader('README.md') as reader:
             assert reader['key'] == 'value'
 
     def test_invalid_schema(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
