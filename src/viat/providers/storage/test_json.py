@@ -11,20 +11,20 @@ from .json import JsonAttributeStorage, JsonAttributeStorageConfig
 
 class TestJsonStorage:
     def test_basic_mutation(self, temp_directory: pathlib.Path) -> None:
-        config_path = temp_directory.joinpath('config.json')
-        storage = JsonAttributeStorage(JsonAttributeStorageConfig(config_path))
+        storage_path = temp_directory.joinpath('storage.json')
+        storage = JsonAttributeStorage(JsonAttributeStorageConfig(storage_path))
 
         with storage as conn, conn.get_mutator('table') as mut:
             mut['key'] = 'value'
 
         expected_contents = json.dumps({'table': {'key': 'value'}})
-        assert config_path.read_text() == expected_contents
+        assert storage_path.read_text() == expected_contents
 
     def test_failed_validation_for_stored_data(self, temp_directory: pathlib.Path) -> None:
-        config_path = temp_directory.joinpath('config.json')
+        storage_path = temp_directory.joinpath('storage.json')
         initial_contents = json.dumps({'table': {'key': 'value'}})
 
-        config_path.write_text(initial_contents)
+        storage_path.write_text(initial_contents)
 
         schema_path = temp_directory.joinpath('schema.json')
         schema = dedent("""\
@@ -39,17 +39,17 @@ class TestJsonStorage:
         )
 
         schema_path.write_text(schema)
-        storage = JsonAttributeStorage(JsonAttributeStorageConfig(config_path, schema_path))
+        storage = JsonAttributeStorage(JsonAttributeStorageConfig(storage_path, schema_path))
 
         with pytest.warns(ViatStoredDataValidationWarning):  # noqa: SIM117
             with storage as _conn:
                 ...
 
     def test_update_failing_validation(self, temp_directory: pathlib.Path) -> None:
-        config_path = temp_directory.joinpath('config.json')
+        storage_path = temp_directory.joinpath('storage.json')
         initial_contents = json.dumps({'table': {'key': 'value'}})
 
-        config_path.write_text(initial_contents)
+        storage_path.write_text(initial_contents)
 
         schema_path = temp_directory.joinpath('schema.json')
         schema = dedent("""\
@@ -64,7 +64,7 @@ class TestJsonStorage:
         )
 
         schema_path.write_text(schema)
-        storage = JsonAttributeStorage(JsonAttributeStorageConfig(config_path, schema_path))
+        storage = JsonAttributeStorage(JsonAttributeStorageConfig(storage_path, schema_path))
 
         with pytest.raises(ViatValidationError):  # noqa: SIM117
             with storage as conn, conn.get_mutator('table') as mut:

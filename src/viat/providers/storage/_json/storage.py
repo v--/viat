@@ -67,7 +67,7 @@ class JsonAttributeStorage(ViatAttributeStorage):
         if not self._active_conn:
             raise ViatAttributeStorageError('This storage has no active connection')
 
-        if not self._active_conn.has_mutations:
+        if exc_value or not self._active_conn.has_mutations:
             self._active_conn = None
             return
 
