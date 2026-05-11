@@ -1,0 +1,37 @@
+import pathlib
+from collections.abc import Iterator, Mapping
+
+from viat.exceptions import MissingAttributeError
+from viat.protocols import ViatAttributeReader
+from viat.support.json import Json, JsonObject
+
+
+class JsonAttributeReader(Mapping[str, Json], ViatAttributeReader):
+    """A storage reader for JSON objects.
+
+    Args:
+        path: The path to which the table corresponds.
+        json_object: The object to proxy.
+    """
+
+    path: pathlib.Path
+    """The path used to initialize the reader."""
+
+    json_object: JsonObject
+    """The object used to initialize the reader."""
+
+    def __init__(self, path: pathlib.Path, json_object: JsonObject) -> None:
+        self.path = path
+        self.json_object = json_object
+
+    def __getitem__(self, key: str) -> Json:
+        try:
+            return self.json_object[key]
+        except KeyError:
+            raise MissingAttributeError(self.path, key) from None
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self.json_object)
+
+    def __len__(self) -> int:
+        return len(self.json_object)

@@ -1,0 +1,84 @@
+[project]
+site_name = "viat"
+site_description = "A tool for managing virtual file attributes"
+site_author = "Ianis Vasilev"
+site_dir = "dist/docs"
+site_url = "https://ianis-vasilev.github.io/viat/docs"
+repo_url = "https://github.com/v--/viat"
+repo_name = "v--/viat"
+nav = [
+  { "Usage" = "usage.md" },
+  { "Exceptions" = "api/exceptions.md" },
+  { "API Reference" = [
+    { "Protocols" = "api/protocols.md" },
+    { "Vault" = "api/vault.md" },
+    { "Exceptions" = "api/exceptions.md" },
+    { "Providers" = [
+      { "Tracker providers" = "api/providers/tracker.md" },
+      { "Storage providers" = "api/providers/storage.md" },
+    ] },
+    { "Support" = [
+      { "JSON" = "api/support/json.md" },
+      { "TOML" = "api/support/toml.md" },
+      { "stdlib protocols" = "api/support/stdlib_protocols.md" },
+      { "Path resolver" = "api/support/path_resolver.md" },
+    ] },
+  ] },
+]
+
+# mkdocstrings
+[project.plugins.mkdocstrings.handlers.python]
+inventories = ["https://docs.python.org/3/objects.inv"]
+paths = ["src"]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+backlinks = "tree"
+docstring_section_style = "list"
+show_root_heading = true
+show_symbol_type_heading = true
+show_symbol_type_toc = true
+unwrap_annotated = true
+relative_crossrefs = true
+
+[project.theme]
+# Zensical requires an explicit list of "theme features".
+# A default configuration can be found at
+#   https://github.com/zensical/zensical/blob/master/python/zensical/bootstrap/zensical.toml
+features = [
+    "content.action.edit",
+    "content.action.view",
+    "content.code.annotate",
+    "content.code.copy",
+    "content.code.select",
+    "content.tabs.link",
+    "content.tooltips",
+    "navigation.instant",
+    "navigation.instant.prefetch",
+    "navigation.path",
+    "navigation.prune",
+    "navigation.tabs",
+    "navigation.sections",
+    "navigation.top",
+    "navigation.tracking",
+    "search.highlight",
+    "toc.follow",
+]
+
+# Copied from
+#   https://zensical.org/docs/setup/colors#automatic-light-dark-mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"

@@ -1,0 +1,85 @@
+[project]
+name = "viat"
+version = "0.9.0"
+description = "A tool for managing virtual file attributes"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Unlicense"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Operating System :: OS Independent",
+  "Topic :: Utilities",
+]
+dependencies = [
+  "fastjsonschema (>=2.21)",
+  "tomlkit (>=0.13)",
+  "wcmatch (>=10)",
+]
+
+[project.optional-dependencies]
+git = [
+  "pygit2 (>=1.19)",
+]
+cli = [
+  "click (>=8.3)",
+]
+
+[project.urls]
+Repository = "https://github.com/v--/viat.git"
+Changelog = "https://github.com/v--/viat/blob/master/CHANGELOG.md"
+Documentation = "https://<path_to_documentation>"
+
+[project.scripts]
+viat = "viat.cli:viat"
+
+[dependency-groups]
+dev = [
+  "mkdocstrings-python (>=2)",
+  "mypy (>=2)",
+  "poethepoet (>=0.45)",
+  "pytest (>=9.0.3)",
+  "ruff (>=0.15)",
+  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15post7",
+  "viat[cli, git] (>=0.0.0)",
+  "zensical (>=0.0.31)",
+]
+
+[build-system]
+# uv build complains if no upper bound is set, but it updates its minor versions often, so we put a major version just to shut it up
+requires = ["uv_build (>=0.10, <1)"]
+build-backend = "uv_build"
+
+# uv
+[tool.uv]
+resolution = "lowest-direct"
+
+# poe
+[tool.poe.tasks.test]
+cmd = "pytest"
+
+[tool.poe.tasks.lint]
+sequence = [
+  { cmd = "ruff check $path" },
+  { cmd = "mypy $path" },
+]
+args = [
+  { name = "path", positional = true, default = "" }
+]
+
+[tool.poe.tasks.docs]
+cmd = "zensical"
+
+# ruff
+[tool.ruff]
+extend = ".venv/share/ruff/ruff.ivasilev.toml"
+
+# mypy
+[tool.mypy]
+packages = ["viat"]
+
+[[tool.mypy.overrides]]
+module = [
+  "fastjsonschema.*"
+]
+ignore_missing_imports = true
