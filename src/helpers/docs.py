@@ -1,6 +1,7 @@
 import importlib.metadata
 import io
 import pathlib
+import re
 from inspect import cleandoc
 from textwrap import dedent
 
@@ -17,7 +18,7 @@ def build_man_page() -> None:
     version = importlib.metadata.version('viat')
     date_str = extract_date_from_changelog(version)
     pathlib.Path('dist/man').mkdir(exist_ok=True)
-    extracted_usage = extract_usage_from_readme(only_cli=True)
+    extracted_readme_usage = extract_usage_from_readme(only_cli=True)
 
     # The following code is an variation of the generate_man_page function from
     #   https://github.com/click-contrib/click-man/blob/master/click_man/core.py
@@ -60,11 +61,12 @@ def build_man_page() -> None:
             ),
         )
 
-        man_tutorial = extracted_usage \
-            .replace('\n\n    ', '\n.IP\n') \
-            .replace('\n    ', '\n.br\n') \
+        man_tutorial = re.sub('```\\w+', '.IP', extracted_readme_usage) \
+            .replace('```', '\n.P\n') \
+            .replace('`', '"') \
             .replace('\n\n', '\n.P\n') \
-            .replace('`', '"')
+            .replace('\n\n', '\n') \
+            .replace('\n', '\n.br\n')
 
         man_file.write('.SH TUTORIAL\n')
         man_file.writelines(man_tutorial)
