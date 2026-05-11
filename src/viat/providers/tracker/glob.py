@@ -76,4 +76,4 @@ class GlobFileTracker(ViatFileTracker):
 
     @override
     def is_tracked(self, path: pathlib.Path) -> bool:
-        return glob.globmatch(path, self.config.patterns, root_dir=self.config.root, flags=self._glob_flags())
+        return glob.globmatch(path, self.config.patterns, root_dir=self.config.root, flags=self._glob_flags() | glob.REALPATH)
