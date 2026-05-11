@@ -6,6 +6,7 @@ import pytest
 from click.testing import CliRunner
 
 from viat.cli import viat
+from viat.exceptions import ViatAttributeStorageError
 from viat.support.path_resolver import ViatPathResolver
 from viat.vault import ViatVault
 
@@ -24,7 +25,7 @@ def vault_with_readme(temp_directory: pathlib.Path) -> ViatVault:
     config_path.write_text(
         dedent("""\
             [tracker.glob]
-            patterns = ["README.md"]
+            patterns = ["*.md"]
             """,
         ),
     )
@@ -237,10 +238,104 @@ class TestTracked:
 
 class TestStale:
     def test_raw_glob(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
-        with vault_with_readme.storage as conn, conn.get_mutator(pathlib.Path('CHANGELOG.md')) as mut:
+        with vault_with_readme.storage as conn, conn.get_mutator('CHANGELOG.md') as mut:
             mut['key'] = 'value'
 
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
             result = click_runner.invoke(viat, ['stale'])
             assert result.stdout == 'CHANGELOG.md\n'
             assert result.stderr == ''
+
+
+class TestMv:
+    def test_move(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
+            mut['key'] = 'value'
+
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['mv', 'README.md', 'CHANGELOG.md'])
+            assert result.stdout == ''
+            assert result.stderr == ''
+
+        with vault_with_readme.storage as conn:
+            with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+                with conn.get_reader('README.md') as reader:
+                    assert reader['key']
+
+            with conn.get_reader('CHANGELOG.md') as reader:
+                assert reader['key'] == 'value'
+
+    def test_move_to_existing(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        readme = vault_with_readme.resolver.get_root().joinpath('README.md')
+        changelog = vault_with_readme.resolver.get_root().joinpath('CHANGELOG.md')
+        changelog.touch()
+
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['mv', 'README.md', 'CHANGELOG.md'])
+            assert result.stdout == ''
+            assert result.stderr == "Error: File 'CHANGELOG.md' already exists.\n"
+
+        assert readme.exists()
+        assert changelog.read_text() == ''
+
+    def test_force_move_to_existing(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        readme = vault_with_readme.resolver.get_root().joinpath('README.md')
+        readme_text = readme.read_text()
+        changelog = vault_with_readme.resolver.get_root().joinpath('CHANGELOG.md')
+        changelog.touch()
+
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['mv', '--force', 'README.md', 'CHANGELOG.md'])
+            assert result.stdout == ''
+            assert result.stderr == ''
+
+        assert not readme.exists()
+        assert changelog.read_text() == readme_text
+
+    def test_error_recovery(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        readme = vault_with_readme.resolver.get_root().joinpath('README.md')
+        changelog = vault_with_readme.resolver.get_root().joinpath('CHANGELOG.md')
+        changelog.mkdir()
+
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['mv', '--force', 'README.md', 'CHANGELOG.md'])
+            assert result.stdout == ''
+            assert result.stderr == "Error: Aborting due to file system error: [Errno 21] Is a directory: 'README.md' -> 'CHANGELOG.md'.\n"
+
+        assert readme.exists()
+
+
+class TestRm:
+    def test_remove(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        readme = vault_with_readme.resolver.get_root().joinpath('README.md')
+
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
+            mut['key'] = 'value'
+
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['rm', 'README.md'])
+            assert result.stdout == ''
+            assert result.stderr == ''
+
+        assert not readme.exists()
+
+        with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+            with vault_with_readme.storage as conn, conn.get_reader('README.md') as reader:
+                assert reader['key']
+
+    def test_error_recovery(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        dir_path = vault_with_readme.resolver.get_root().joinpath('dir.md')
+        dir_path.mkdir()
+
+        with vault_with_readme.storage as conn, conn.get_mutator('dir.md') as mut:
+            mut['key'] = 'value'
+
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['rm', 'dir.md'])
+            assert result.stdout == ''
+            assert result.stderr == "Error: Aborting due to file system error: [Errno 21] Is a directory: 'dir.md'.\n"
+
+        assert dir_path.exists()
+
+        with vault_with_readme.storage as conn, conn.get_reader('dir.md') as reader:
+            assert reader['key'] == 'value'

@@ -1,1 +1,11 @@
-from . import get, get_all, init, set, stale, tracked, update  # noqa: A004
+from . import (
+    get,
+    get_all,
+    init,
+    mv,
+    rm,
+    set,  # noqa: A004
+    stale,
+    tracked,
+    update,
+)
