@@ -2,6 +2,28 @@
 
 A tool for managing **vi**rtual file **at**tributes.
 
+Viat allows recording file attributes in a plain text file. The main unit of operation is a vault, which is determined by `.viat` subdirectory. In the simplest case, this subdirectory contains `config.toml`, `storage.toml` and possibly `schema.json`.
+
+In short, in an empty vault, the command
+
+```shell
+viat set file.pdf --raw attr value
+```
+
+puts the following into `storage.toml`:
+
+```toml
+[file.pdf]
+attr = "value"
+```
+
+## Table of contents
+
+* [Usage](#usage)
+* [Installation](#installation)
+* [Motivation](#motivation)
+* [Documentation](https://<path_to_documentation>)
+
 ## Usage
 
 We give a usage tutorial here; refer to the [online documentation](https://<path_to_documentation>) or to the man page `viat(1)` for more details.
@@ -24,7 +46,7 @@ Warning: File 'tractatus.pdf' is not being tracked.
 
 All stored attributes for the file get printed; in this case the only stored attributes are those we have just added. We also get a warning saying that the vault's tracker does not know about this file.
 
-The role of the tracker is to enumerate the files that are explicitly tracked by the vault. The default glob-based tracking provider requires explicit patterns. We can track all PDF files in the roof of the vault using the following configuration:
+The role of the tracker is to enumerate the files that are explicitly tracked by the vault. The default glob-based tracking provider requires explicit patterns. We can track all PDF files in the root of the vault using the following configuration:
 
 ```toml
 [tracker.glob]
@@ -38,7 +60,7 @@ $ viat set tractatus.pdf rating 4
 {"author": "Ludwig Wittgenstein", "year": 1921, "rating": 4}
 ```
 
-The above worked because "true" is a valid JSON value; if we were to set a string instead, we would have to escape it in quotes. To treat the value as a string, we can use the `--raw` flag:
+The above worked because "true" is a valid JSON value; if we were to set a string instead, we would have to escape it in quotes, which is inconvenient. Instead, we can treat the value as a string by passing the `--raw` flag:
 
 ```shell
 $ viat set --raw tractatus.pdf publisher 'Annalen der Naturphilosophie'
@@ -118,7 +140,7 @@ with vault.storage as conn:
     with conn.get_reader('tractatus.pdf') as reader:
         print(mut['year'])
 
-    # The following only writes:
+    # The following only writes (but can obviously be used for reading):
     with conn.get_mutator('tractatus.pdf') as mut:
         mut['year'] = 1921
 ```

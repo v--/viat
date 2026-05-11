@@ -73,8 +73,11 @@ def build_man_page() -> None:
 
 
 def build_usage_md() -> None:
+    extracted_usage = extract_usage_from_readme(only_cli=False)
+
     with open('docs/usage.md', 'w') as file:
-        file.write(extract_usage_from_readme(only_cli=False))
+        file.write('# Usage\n\n')
+        file.write(extracted_usage.replace('### ', '## '))
 
 
 def extract_date_from_changelog(version: str) -> str:

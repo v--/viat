@@ -9,6 +9,9 @@ from .output import cli_warning_handler, with_cli_exception_handler
 @click.version_option()
 @click.pass_context
 def viat(ctx: click.Context) -> None:
-    """A tool for managing virtual file attributes."""
+    """A tool for managing virtual file attributes.
+
+    In short, viat allows recording file attributes in a plain text file, by default TOML.
+    """
     ctx.with_resource(with_warning_handler(cli_warning_handler))
     ctx.with_resource(with_cli_exception_handler())
