@@ -22,11 +22,12 @@ attr = "value"
 * [Usage](#usage)
 * [Installation](#installation)
 * [Motivation](#motivation)
-* [Documentation](https://<path_to_documentation>)
+
+See also the [documentation on ReadTheDocs](https://viat.readthedocs.io/)
 
 ## Usage
 
-We give a usage tutorial here; refer to the [online documentation](https://<path_to_documentation>) or to the man page `viat(1)` for more details.
+We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page `viat(1)` for more details.
 
 ### Command-line usage
 
@@ -124,7 +125,7 @@ For such cases, we provide the helpers `viat mv` and `viat rm`, but otherwise av
 
 ### Programmatic usage
 
-The programmatic usage is straightforward enough because of the [API reference](https://<path_to_documentation>). Here is a brief continuation of the above example:
+The programmatic usage is straightforward enough because of the [API reference](https://viat.readthedocs.io/). Here is a brief continuation of the above example:
 
 ```python
 vault = autoload_vault()

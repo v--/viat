@@ -28,7 +28,7 @@ cli = [
 [project.urls]
 Repository = "https://github.com/v--/viat.git"
 Changelog = "https://github.com/v--/viat/blob/master/CHANGELOG.md"
-Documentation = "https://<path_to_documentation>"
+Documentation = "https://viat.readthedocs.io/"
 
 [project.scripts]
 viat = "viat.cli:viat"
