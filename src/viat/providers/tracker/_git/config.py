@@ -11,6 +11,3 @@ class GitFileTrackerConfig:
 
     revision: str = 'HEAD'
     """The git revision to track files from."""
-
-    track_nonempty_directories: bool = False
-    """Whether to track nonempty directories known to git."""

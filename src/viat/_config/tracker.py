@@ -52,10 +52,6 @@ def load_git_tracker_from_config(resolver: ViatPathResolver, loader: ConfigLoade
     tracker_config = GitFileTrackerConfig(
         repo_root=loader.get_path('tracker', 'git', 'repo_root', root=resolver.get_root(), default=resolver.get_root()),
         revision=loader.get_str('tracker', 'git', 'revision', default=GitFileTrackerConfig.revision),
-        track_nonempty_directories=loader.get_bool(
-            'tracker', 'git', 'track_nonempty_directories',
-            default=GitFileTrackerConfig.track_nonempty_directories,
-        ),
     )
 
     return GitFileTracker(tracker_config)

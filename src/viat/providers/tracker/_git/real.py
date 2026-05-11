@@ -6,7 +6,7 @@ from typing import override
 
 import pygit2
 
-from viat.exceptions import ViatFileTrackerError
+from viat.exceptions import ViatFileTrackerError, ViatVaultError
 from viat.protocols import ViatFileTracker
 
 from .config import GitFileTrackerConfig
@@ -41,9 +41,6 @@ class GitFileTracker(ViatFileTracker):
 
                 case pygit2.Tree():
                     if obj.name:
-                        if self.config.track_nonempty_directories:
-                            yield base_path / obj.name
-
                         yield from self._recurse_into_tree(obj, base_path / obj.name)
 
     @override
@@ -63,11 +60,14 @@ class GitFileTracker(ViatFileTracker):
 
     @override
     def is_tracked(self, path: pathlib.Path) -> bool:
-        relative = path.relative_to(self.config.repo_root)
+        try:
+            relative = path.relative_to(self.config.repo_root)
+        except ValueError:
+            relative = path
 
         try:
             self._repo.blame(relative.as_posix())
-        except KeyError:
+        except (KeyError, ValueError):
             return False
 
         return True
