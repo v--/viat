@@ -8,6 +8,7 @@ repo_url = "https://github.com/v--/viat"
 repo_name = "v--/viat"
 nav = [
   { "Index" = "index.md" },
+  { "Installation" = "installation.md" },
   { "Usage" = "usage.md" },
   { "API Reference" = [
     { "Protocols" = "api/protocols.md" },
