@@ -27,7 +27,7 @@ See also the [documentation on ReadTheDocs](https://viat.readthedocs.io/)
 
 ## Usage
 
-We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page `viat(1)` for more details.
+We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page [`viat(1)`](https://viat.readthedocs.io/man) for more details.
 
 ### Command-line usage
 
@@ -180,4 +180,10 @@ Sometimes a particular feature branch need to be tested. For installing a fixed 
 
 ```shell
 uv tool install viat --from git+https://github.com/v--/viat@rev
+```
+
+The documentation, including the man page, can be built using
+
+```shell
+uv run poe docs-build
 ```

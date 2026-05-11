@@ -17,6 +17,7 @@ cmd = "zensical serve"
 sequence = [
   { script = "src.helpers.docs:build_man_page" },
   { script = "src.helpers.docs:build_usage_md" },
+  { script = "src.helpers.docs:build_man_md" },
 ]
 
 [tasks.docs-build]

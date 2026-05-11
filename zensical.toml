@@ -10,6 +10,7 @@ nav = [
   { "Index" = "index.md" },
   { "Installation" = "installation.md" },
   { "Usage" = "usage.md" },
+  { "Man page" = "man.md" },
   { "API Reference" = [
     { "Protocols" = "api/protocols.md" },
     { "Vault" = "api/vault.md" },

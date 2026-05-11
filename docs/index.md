@@ -17,4 +17,4 @@ puts the following into `storage.toml`:
 attr = "value"
 ```
 
-This site features an extensive [usage tutorial](./usage), as well as an [API reference](/api).
+This site features [installation instructions](./installation), an extensive [usage tutorial](./usage), as well as a [man page](./man) and an [API reference](/api/protocols).

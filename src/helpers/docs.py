@@ -1,3 +1,4 @@
+import subprocess
 import importlib.metadata
 import io
 import pathlib
@@ -78,6 +79,17 @@ def build_usage_md() -> None:
     with open('docs/usage.md', 'w') as file:
         file.write('# Usage\n\n')
         file.write(extracted_usage.replace('### ', '## '))
+
+
+def build_man_md() -> None:
+    proc = subprocess.Popen(['man', 'dist/man/viat.1'], env={'MANWIDTH': '88'}, stdout=subprocess.PIPE)
+    assert proc.stdout
+    rendered = proc.stdout.read().decode('utf-8')
+
+    with open('docs/man.md', 'w') as file:
+        file.write('```troff\n')
+        file.write(rendered)
+        file.write('```\n')
 
 
 def extract_date_from_changelog(version: str) -> str:
