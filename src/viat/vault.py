@@ -2,12 +2,7 @@
 import os
 import pathlib
 
-from viat._config import (
-    load_json_config_file,
-    load_toml_config_file,
-    load_tracker_from_config,
-)
-from viat._config.storage import load_storage_from_config
+from viat._config import ConfigLoader, load_storage_from_config, load_tracker_from_config
 from viat.exceptions import ViatVaultError
 from viat.protocols import ViatAttributeStorage, ViatFileTracker
 from viat.support.path_resolver import VIAT_SUBDIR, ViatPathResolver
@@ -87,14 +82,14 @@ class ViatVault:
         except OSError as err:
             raise ViatVaultError(f'The {VIAT_SUBDIR} subdirectory cannot be accessed') from err
 
-        if config := load_toml_config_file(self.resolver.get_config('toml')):
+        if config_loader := ConfigLoader.try_load_toml_file(self.resolver.get_config('toml')):
             if self.resolver.get_config('json').exists():
-                raise ViatVaultError('Cannot have both config.toml and config.json in the viat directory')
+                raise ViatVaultError(f'Cannot have both config.toml and config.json in the {VIAT_SUBDIR} subdirectory')
         else:
-            config = load_json_config_file(self.resolver.get_config('json'))
+            config_loader = ConfigLoader.try_load_json_file(self.resolver.get_config('json')) or ConfigLoader({})
 
-        self.tracker = load_tracker_from_config(self.resolver, config.get('tracker') if config else None)
-        self.storage = load_storage_from_config(self.resolver, config.get('storage') if config else None)
+        self.tracker = load_tracker_from_config(self.resolver, config_loader)
+        self.storage = load_storage_from_config(self.resolver, config_loader)
 
 
 def autoresolve_vault_path() -> pathlib.Path:
