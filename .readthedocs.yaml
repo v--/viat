@@ -6,7 +6,7 @@ build:
     python: latest
 
   apt_packages:
-  - man-db
+  - groff
 
   jobs:
     build:

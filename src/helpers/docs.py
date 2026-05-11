@@ -82,13 +82,15 @@ def build_usage_md() -> None:
 
 
 def build_man_md() -> None:
-    proc = subprocess.Popen(['man', 'dist/man/viat.1'], env={'MANWIDTH': '88'}, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(['groff', '-mandoc', '-Tutf8', '-rLL=87n', 'dist/man/viat.1'], stdout=subprocess.PIPE)
     assert proc.stdout
     rendered = proc.stdout.read().decode('utf-8')
+    # The replacement patterns are based on https://stackoverflow.com/a/78367016/2756776
+    unescaped = re.sub('\x1B\\[[0-9;]*[JKmsu]', '', rendered)
 
     with open('docs/man.md', 'w') as file:
         file.write('```troff\n')
-        file.write(rendered)
+        file.write(unescaped)
         file.write('```\n')
 
 
