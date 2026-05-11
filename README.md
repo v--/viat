@@ -133,4 +133,20 @@ When managing lots of files, there comes a point when metadata needs to be attac
 
 * XMP ([extensible metadata platform](https://developer.adobe.com/xmp/docs/)) files are designed to be used by arbitrary tools and can be easily tracked using version control, but are cumbersome to manage.
 
-Perhaps I am missing some other approaches, but at this point it should be clear that there is no convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. I needing variations of the script every now and then, so I ended up creating this tool.
+Perhaps I am missing some other approaches, but at this point it should be clear that there is no convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. At some point I decided to refine the script, and so viat was born.
+
+## Installation
+
+An easy way to install a `viat` executable for the current user is via [`uv`](https://docs.astral.sh/uv/):
+
+```shell
+uv tool install viat --from git+https://github.com/v--/viat[cli]
+```
+
+The `git` extra must be added in case you want to use the git tracker.
+
+Sometimes a particular feature branch need to be tested. For installing a fixed revision (i.e. common/branch/tag), the following should work (if `extra-name` is needed, use `viat@rev[extra-name]`):
+
+```shell
+uv tool install viat --from git+https://github.com/v--/viat@rev
+```
