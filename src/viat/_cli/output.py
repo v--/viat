@@ -1,6 +1,7 @@
 import contextlib
 import json
-from collections.abc import Generator
+import pathlib
+from collections.abc import Generator, Iterable
 
 import click
 
@@ -85,3 +86,11 @@ def print_json_value(value: Json, *, raw: bool = False) -> None:
         click.echo(value)
     else:
         click.echo(json.dumps(value))
+
+
+def print_paths(paths: Iterable[pathlib.Path], *, output_json: bool = False) -> None:
+    if output_json:
+        print_json_value([path.as_posix() for path in paths])
+    else:
+        for path in paths:
+            click.echo(path.as_posix())

@@ -29,7 +29,7 @@ def vault_with_readme(temp_directory: pathlib.Path) -> ViatVault:
         ),
     )
 
-    resolver.get_root().joinpath('README.md').write_text('# Readme\n')
+    temp_directory.joinpath('README.md').write_text('# Readme\n')
     return ViatVault(temp_directory)
 
 
@@ -193,3 +193,54 @@ class TestSet:
             result = click_runner.invoke(viat, ['set', 'README.md', 'key', '"value"'])
             assert result.stdout == ''
             assert result.stderr == "Error: Validation error for 'README.md': data.key must be number.\n"
+
+
+class TestTracked:
+    def test_raw_glob(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['tracked'])
+            assert result.stdout == 'README.md\n'
+            assert result.stderr == ''
+
+    def test_json_glob(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['tracked', '--json'])
+            assert result.stdout == '["README.md"]\n'
+            assert result.stderr == ''
+
+    def test_no_data(self, temp_directory: pathlib.Path, click_runner: CliRunner) -> None:
+        resolver = ViatPathResolver(temp_directory)
+        resolver.get_viat().mkdir()
+
+        config_path = resolver.get_config('toml')
+        config_path.write_text(
+            dedent("""\
+                [tracker.glob]
+                patterns = ["*.md"]
+                """,
+            ),
+        )
+
+        temp_directory.joinpath('README.md').write_text('# Readme\n')
+        temp_directory.joinpath('CHANGELOG.md').touch()
+
+        vault = ViatVault(temp_directory)
+
+        with vault.storage as conn, conn.get_mutator('CHANGELOG.md') as mut:
+            mut['key'] = 'value'
+
+        with contextlib.chdir(temp_directory):
+            result = click_runner.invoke(viat, ['tracked', '--no-data'])
+            assert result.stdout == 'README.md\n'
+            assert result.stderr == ''
+
+
+class TestStale:
+    def test_raw_glob(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        with vault_with_readme.storage as conn, conn.get_mutator(pathlib.Path('CHANGELOG.md')) as mut:
+            mut['key'] = 'value'
+
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['stale'])
+            assert result.stdout == 'CHANGELOG.md\n'
+            assert result.stderr == ''
