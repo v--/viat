@@ -1,5 +1,5 @@
 [project]
-site_name = "viat"
+site_name = "Viat"
 site_description = "A tool for managing virtual file attributes"
 site_author = "Ianis Vasilev"
 site_dir = "dist/docs"

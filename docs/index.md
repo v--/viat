@@ -1,4 +1,4 @@
-# viat
+# Viat
 
 A tool for managing **vi**rtual file **at**tributes.
 
