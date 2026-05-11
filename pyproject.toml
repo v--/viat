@@ -31,7 +31,7 @@ Changelog = "https://github.com/v--/viat/blob/master/CHANGELOG.md"
 Documentation = "https://viat.readthedocs.io/"
 
 [project.scripts]
-viat = "viat.cli:viat"
+viat = "viat.cli:viat[cli]"
 
 [dependency-groups]
 dev = [
