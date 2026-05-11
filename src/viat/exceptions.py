@@ -79,6 +79,17 @@ class ViatAttributeStorageWarning(ViatWarning):
     """Generic warning class for storage-related issues."""
 
 
+class ViatUntrackedFileWarning(ViatAttributeStorageWarning):
+    """Warning class for untracked files.
+
+    Args:
+        path: Path to untracked file.
+    """
+
+    def __init__(self, path: pathlib.Path) -> None:
+        super().__init__(path)
+
+
 class ViatStoredDataValidationWarning(ViatAttributeStorageWarning):
     """Warning class for stored data that does not pass validation.
 

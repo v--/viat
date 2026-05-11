@@ -24,7 +24,7 @@ def update(path: pathlib.Path, attrs: str) -> None:
         raise ViatMalformedDataError(f'Expected a JSON object, but got {attrs!r}')
 
     vault = autoload_vault()
-    rel_path = vault.resolver.relativize(path)
+    rel_path = vault.normalize_path(path)
 
     with vault.storage as conn, conn.get_mutator(rel_path) as mut:
         mut.update(parsed)

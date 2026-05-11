@@ -12,7 +12,7 @@ from viat.vault import autoload_vault
 def get_all(path: pathlib.Path) -> None:
     """Retrieve all stored attributes for a tracked file."""
     vault = autoload_vault()
-    rel_path = vault.resolver.relativize(path)
+    rel_path = vault.normalize_path(path)
 
     with vault.storage as conn, conn.get_reader(rel_path) as reader:
         print_json_value(dict(reader))

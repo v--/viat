@@ -10,6 +10,7 @@ from viat.exceptions import (
     ViatException,
     ViatMalformedStoredDataError,
     ViatStoredDataValidationWarning,
+    ViatUntrackedFileWarning,
     ViatValidationError,
     ViatWarning,
 )
@@ -39,6 +40,13 @@ def get_error_string(err: ViatException) -> str:
                 err.__cause__,
             )
 
+        case ViatMalformedStoredDataError():
+            (path,) = err.args
+            return _join_error_message_with_cause(
+                f'Malformed data stored for {path.as_posix()!r}',
+                err.__cause__,
+            )
+
         case ViatStoredDataValidationWarning():
             (path,) = err.args
             return _join_error_message_with_cause(
@@ -46,12 +54,9 @@ def get_error_string(err: ViatException) -> str:
                 err.__cause__,
             )
 
-        case ViatMalformedStoredDataError():
+        case ViatUntrackedFileWarning():
             (path,) = err.args
-            return _join_error_message_with_cause(
-                f'Malformed data stored for {path.as_posix()!r}',
-                err.__cause__,
-            )
+            return f'File {path.as_posix()!r} is not being tracked.'
 
         case MissingAttributeError():
             path, attr = err.args

@@ -142,18 +142,19 @@ class TestTomlStorage:
         config_path.write_text(initial_contents)
 
         schema_path = temp_directory.joinpath('schema.json')
-        schema = dedent("""\
-            {
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "type": "number"
+        schema_path.write_text(
+            dedent("""\
+                {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "number"
+                        }
                     }
-                }
-            }""",
+                }""",
+            ),
         )
 
-        schema_path.write_text(schema)
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(config_path, schema_path))
 
         with pytest.warns(ViatStoredDataValidationWarning):  # noqa: SIM117
@@ -171,18 +172,19 @@ class TestTomlStorage:
         config_path.write_text(initial_contents)
 
         schema_path = temp_directory.joinpath('schema.json')
-        schema = dedent("""\
-            {
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "type": "string"
+        schema_path.write_text(
+            dedent("""\
+                {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "string"
+                        }
                     }
-                }
-            }""",
+                }""",
+            ),
         )
 
-        schema_path.write_text(schema)
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(config_path, schema_path))
 
         with pytest.raises(ViatValidationError):  # noqa: SIM117

@@ -6,7 +6,7 @@ from typing import override
 
 import pygit2
 
-from viat.exceptions import ViatFileTrackerError, ViatVaultError
+from viat.exceptions import ViatFileTrackerError
 from viat.protocols import ViatFileTracker
 
 from .config import GitFileTrackerConfig

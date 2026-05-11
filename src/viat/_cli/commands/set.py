@@ -35,7 +35,7 @@ def set_(path: pathlib.Path, attr: str, value: str, raw: bool) -> None:
             raise ViatMalformedDataError(f'Malformed JSON string {value!r}') from err
 
     vault = autoload_vault()
-    rel_path = vault.resolver.relativize(path)
+    rel_path = vault.normalize_path(path)
 
     with vault.storage as conn, conn.get_mutator(rel_path) as mut:
         mut[attr] = parsed_value
