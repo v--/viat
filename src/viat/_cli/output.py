@@ -6,10 +6,10 @@ from collections.abc import Generator, Iterable
 import click
 
 from viat.exceptions import (
-    MissingAttributeError,
     ViatError,
     ViatException,
     ViatMalformedStoredDataError,
+    ViatMissingAttributeError,
     ViatStoredDataValidationWarning,
     ViatUntrackedFileWarning,
     ViatValidationError,
@@ -59,7 +59,7 @@ def get_error_string(err: ViatException) -> str:
             (path,) = err.args
             return f'File {path.as_posix()!r} is not being tracked.'
 
-        case MissingAttributeError():
+        case ViatMissingAttributeError():
             path, attr = err.args
             return f'Attribute {attr!r} has not been set for {path.as_posix()!r}.'
 

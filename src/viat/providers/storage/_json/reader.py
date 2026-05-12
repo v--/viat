@@ -1,7 +1,7 @@
 import pathlib
 from collections.abc import Iterator, Mapping
 
-from viat.exceptions import MissingAttributeError
+from viat.exceptions import ViatMissingAttributeError
 from viat.protocols import ViatAttributeReader
 from viat.support.json import Json, JsonObject
 
@@ -28,7 +28,7 @@ class JsonAttributeReader(Mapping[str, Json], ViatAttributeReader):
         try:
             return self.json_object[key]
         except KeyError:
-            raise MissingAttributeError(self.path, key) from None
+            raise ViatMissingAttributeError(self.path, key) from None
 
     def __iter__(self) -> Iterator[str]:
         return iter(self.json_object)

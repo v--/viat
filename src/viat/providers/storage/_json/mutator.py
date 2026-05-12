@@ -1,7 +1,7 @@
 import pathlib
 from collections.abc import MutableMapping
 
-from viat.exceptions import MissingAttributeError
+from viat.exceptions import ViatMissingAttributeError
 from viat.protocols import ViatAttributeMutator
 from viat.support.json import Json, MutableJsonObject
 
@@ -29,4 +29,4 @@ class JsonAttributeMutator(MutableMapping[str, Json], JsonAttributeReader, ViatA
         try:
             del self.json_object[key]
         except KeyError:
-            raise MissingAttributeError(self.path, key) from None
+            raise ViatMissingAttributeError(self.path, key) from None

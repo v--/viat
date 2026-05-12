@@ -59,7 +59,7 @@ class ViatValidationError(ViatAttributeStorageError):
         super().__init__(path)
 
 
-class MissingAttributeError(ViatAttributeStorageError, KeyError):
+class ViatMissingAttributeError(ViatAttributeStorageError, KeyError):
     """Error class for missing attributes.
 
     Args:

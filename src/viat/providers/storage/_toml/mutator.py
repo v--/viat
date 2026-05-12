@@ -6,7 +6,7 @@ import tomlkit.container
 import tomlkit.exceptions
 import tomlkit.items
 
-from viat.exceptions import MissingAttributeError
+from viat.exceptions import ViatMissingAttributeError
 from viat.protocols import ViatAttributeMutator
 from viat.support.json import Json
 
@@ -34,4 +34,4 @@ class TomlAttributeMutator(MutableMapping[str, Json], TomlAttributeReader, ViatA
         try:
             del self.toml_table[key]
         except KeyError:
-            raise MissingAttributeError(self.path, key) from None
+            raise ViatMissingAttributeError(self.path, key) from None

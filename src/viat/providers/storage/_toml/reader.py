@@ -6,7 +6,7 @@ import tomlkit.container
 import tomlkit.exceptions
 import tomlkit.items
 
-from viat.exceptions import MissingAttributeError
+from viat.exceptions import ViatMissingAttributeError
 from viat.protocols import ViatAttributeReader
 from viat.support.json import Json
 from viat.support.toml import toml_to_json
@@ -34,7 +34,7 @@ class TomlAttributeReader(Mapping[str, Json], ViatAttributeReader):
         try:
             value = self.toml_table[key]
         except KeyError:
-            raise MissingAttributeError(self.path, key) from None
+            raise ViatMissingAttributeError(self.path, key) from None
 
         return toml_to_json(value)
 
