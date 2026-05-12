@@ -5,66 +5,8 @@ from collections.abc import Generator, Iterable
 
 import click
 
-from viat.exceptions import (
-    ViatError,
-    ViatException,
-    ViatMalformedStoredDataError,
-    ViatMissingAttributeError,
-    ViatStoredDataValidationWarning,
-    ViatUntrackedFileWarning,
-    ViatValidationError,
-    ViatWarning,
-)
+from viat.exceptions import ViatError, ViatWarning
 from viat.support.json import Json
-
-
-def _recursively_join_error_messages(err: ViatException) -> str:
-    if isinstance(err.__cause__, ViatException):
-        return f'{err}. {get_error_string(err.__cause__)}'
-
-    return f'{err}.'
-
-
-def _join_error_message_with_cause(message: str, cause: BaseException | None) -> str:
-    if cause:
-        return f'{message}: {cause}.'
-
-    return message
-
-
-def get_error_string(err: ViatException) -> str:
-    match err:
-        case ViatValidationError():
-            (path,) = err.args
-            return _join_error_message_with_cause(
-                f'Validation error for {path.as_posix()!r}',
-                err.__cause__,
-            )
-
-        case ViatMalformedStoredDataError():
-            (path,) = err.args
-            return _join_error_message_with_cause(
-                f'Malformed data stored for {path.as_posix()!r}',
-                err.__cause__,
-            )
-
-        case ViatStoredDataValidationWarning():
-            (path,) = err.args
-            return _join_error_message_with_cause(
-                f'Validation error in stored data for {path.as_posix()!r}',
-                err.__cause__,
-            )
-
-        case ViatUntrackedFileWarning():
-            (path,) = err.args
-            return f'File {path.as_posix()!r} is not being tracked.'
-
-        case ViatMissingAttributeError():
-            path, attr = err.args
-            return f'Attribute {attr!r} has not been set for {path.as_posix()!r}.'
-
-        case _:
-            return _recursively_join_error_messages(err)
 
 
 @contextlib.contextmanager
@@ -73,11 +15,11 @@ def with_cli_exception_handler() -> Generator[None]:
     try:
         yield
     except ViatError as err:
-        raise click.ClickException(get_error_string(err)) from err
+        raise click.ClickException(err.get_human_readable_string()) from err
 
 
 def cli_warning_handler(warning: ViatWarning, stacklevel: int) -> bool:  # noqa: ARG001
-    click.echo('Warning: ' + get_error_string(warning), err=True)
+    click.echo('Warning: ' + warning.get_human_readable_string(), err=True)
     return True
 
 
