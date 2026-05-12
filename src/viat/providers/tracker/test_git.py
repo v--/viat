@@ -59,8 +59,8 @@ class TestGitFileTrackerIsTracked:
         temp_directory.joinpath('CHANGELOG.md').touch()
 
         tracker = GitFileTracker(GitFileTrackerConfig(temp_directory))
-        assert tracker.is_tracked(pathlib.Path('README.md'))
-        assert not tracker.is_tracked(pathlib.Path('CHANGELOG.md'))
+        assert tracker.is_tracked('README.md')
+        assert not tracker.is_tracked('CHANGELOG.md')
 
     def test_directory(self, temp_directory: pathlib.Path) -> None:
         temp_directory.joinpath('nested').mkdir()
@@ -71,17 +71,7 @@ class TestGitFileTrackerIsTracked:
         git_commit(repo, 'test')
 
         tracker = GitFileTracker(GitFileTrackerConfig(temp_directory))
-        assert not tracker.is_tracked(pathlib.Path('nested'))
-
-    def test_absolute_path(self, temp_directory: pathlib.Path) -> None:
-        temp_directory.joinpath('README.md').touch()
-
-        repo = pygit2.init_repository(temp_directory)
-        repo.index.add_all()
-        git_commit(repo, 'test')
-
-        tracker = GitFileTracker(GitFileTrackerConfig(temp_directory))
-        assert tracker.is_tracked(temp_directory.absolute().joinpath('README.md'))
+        assert not tracker.is_tracked('nested')
 
     def test_revision_pointer_to_old_commit(self, temp_directory: pathlib.Path) -> None:
         temp_directory.joinpath('README.md').touch()
@@ -97,4 +87,4 @@ class TestGitFileTrackerIsTracked:
         git_commit(repo, 'second', parents=[first_commit])
 
         tracker = GitFileTracker(GitFileTrackerConfig(temp_directory, revision=str(first_commit)))
-        assert not tracker.is_tracked(pathlib.Path('README.md'))
+        assert not tracker.is_tracked('README.md')

@@ -36,9 +36,9 @@ def set_(ctx: click.Context, path: pathlib.Path, attr: str, value: str, raw: boo
             raise ViatMalformedDataError(f'Malformed JSON string {value!r}') from err
 
     vault = autoload_vault(ctx.obj.vault_config)
-    rel_path = vault.normalize_path(path)
+    vault.tracker.validate_tracked(path)
 
-    with vault.storage as conn, conn.get_mutator(rel_path) as mut:
+    with vault.storage as conn, conn.get_mutator(path) as mut:
         mut[attr] = parsed_value
         updated = dict(mut)
 

@@ -5,6 +5,7 @@ from typing import override
 
 import fastjsonschema
 
+from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatAttributeStorageError, ViatMalformedStoredDataError
 from viat.protocols import ViatAttributeStorage
 from viat.support.json import JsonObject, MutableJsonObject
@@ -20,6 +21,10 @@ class AbstractJsonAttributeStorage(ViatAttributeStorage):
 
     def get_json_schema_path(self) -> pathlib.Path | None:
         """Get the path to an optional JSON schema file."""
+        raise NotImplementedError
+
+    def get_resolver(self) -> ViatPathResolver | None:
+        """Get a path resolver for the connection."""
         raise NotImplementedError
 
     def load_storage_data(self) -> MutableJsonObject:
@@ -51,7 +56,7 @@ class AbstractJsonAttributeStorage(ViatAttributeStorage):
         else:
             validator = None
 
-        self._active_conn = JsonAttributeStorageConnection(storage_payload, validator)
+        self._active_conn = JsonAttributeStorageConnection(storage_payload, self.get_resolver(), validator)
         return self._active_conn
 
     @override
@@ -72,16 +77,34 @@ class AbstractJsonAttributeStorage(ViatAttributeStorage):
 
 
 class JsonAttributeStorage(AbstractJsonAttributeStorage):
-    """The JSON file storage class."""
+    """The JSON file storage class.
+
+    Args:
+        config: All configuration required for the storage.
+        resolver: A path resolver used by connections.
+    """
 
     config: JsonAttributeStorageConfig
+    """The configuration used to initialize the storage."""
 
-    def __init__(self, config: JsonAttributeStorageConfig) -> None:
+    resolver: ViatPathResolver | None
+    """The resolver used to initialize the storage."""
+
+    def __init__(
+        self,
+        config: JsonAttributeStorageConfig,
+        resolver: ViatPathResolver | None = None,
+    ) -> None:
         self.config = config
+        self.resolver = resolver
 
     @override
     def get_json_schema_path(self) -> pathlib.Path | None:
         return self.config.json_schema_path
+
+    @override
+    def get_resolver(self) -> ViatPathResolver | None:
+        return self.resolver
 
     @override
     def load_storage_data(self) -> MutableJsonObject:

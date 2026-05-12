@@ -35,7 +35,7 @@ def load_toml_storage_from_config(resolver: ViatPathResolver, static_config: Via
             schema_path = resolver.get_viat() / 'schema.json'
 
     storage_config = TomlAttributeStorageConfig(storage_path, schema_path)
-    return TomlAttributeStorage(storage_config)
+    return TomlAttributeStorage(storage_config, resolver)
 
 
 def load_json_storage_from_config(resolver: ViatPathResolver, static_config: ViatVaultStaticConfig, loader: ConfigLoader) -> JsonAttributeStorage:
@@ -55,5 +55,5 @@ def load_json_storage_from_config(resolver: ViatPathResolver, static_config: Via
         raise ViatConfigError('The storage.json.indent option must be a string or int')
 
     storage_config = JsonAttributeStorageConfig(storage_path, schema_path, indent)
-    return JsonAttributeStorage(storage_config)
+    return JsonAttributeStorage(storage_config, resolver)
 

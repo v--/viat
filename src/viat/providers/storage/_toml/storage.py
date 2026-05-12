@@ -4,6 +4,7 @@ from typing import override
 
 import tomli_w
 
+from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatAttributeStorageError, ViatMalformedStoredDataError
 from viat.providers.storage.json import AbstractJsonAttributeStorage
 from viat.support.json import JsonObject, MutableJsonObject
@@ -12,16 +13,34 @@ from .config import TomlAttributeStorageConfig
 
 
 class TomlAttributeStorage(AbstractJsonAttributeStorage):
-    """The TOML file storage class."""
+    """The TOML file storage class.
+
+    Args:
+        config: All configuration required for the storage.
+        resolver: A path resolver used by connections.
+    """
 
     config: TomlAttributeStorageConfig
+    """The configuration used to initialize the storage."""
 
-    def __init__(self, config: TomlAttributeStorageConfig) -> None:
+    resolver: ViatPathResolver | None
+    """The resolver used to initialize the storage."""
+
+    def __init__(
+        self,
+        config: TomlAttributeStorageConfig,
+        resolver: ViatPathResolver | None = None,
+    ) -> None:
         self.config = config
+        self.resolver = resolver
 
     @override
     def get_json_schema_path(self) -> pathlib.Path | None:
         return self.config.json_schema_path
+
+    @override
+    def get_resolver(self) -> ViatPathResolver | None:
+        return self.resolver
 
     @override
     def load_storage_data(self) -> MutableJsonObject:

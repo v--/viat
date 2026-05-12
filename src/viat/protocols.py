@@ -28,6 +28,14 @@ class ViatFileTracker(Protocol):
             path: The file path.
         """
 
+    def validate_tracked(self, path: pathlib.Path) -> None:
+        """Validate that a file is being tracked and emit and otherwise emit
+        [`ViatUntrackedFileWarning`](viat.exceptions.ViatUntrackedFileWarning).
+
+        Args:
+            path: The file path.
+        """  # noqa: D205
+
 
 class ViatAttributeReader(MappingProtocol[str, Json], Protocol):
     """A scoped attribute reader for a storage entry."""

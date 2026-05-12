@@ -17,20 +17,21 @@ def mv(ctx: click.Context, src: pathlib.Path, dest: pathlib.Path, force: bool) -
     if dest.exists() and not force:
         raise ViatVaultError(f'File {dest.as_posix()!r} already exists')
 
+
     vault = autoload_vault(ctx.obj.vault_config)
-    rel_src_path = vault.normalize_path(src)
+    vault.tracker.validate_tracked(src)
 
     try:
         src.rename(dest)
     except OSError as err:
         raise ViatVaultError(f'Aborting due to file system error: {err}') from err
 
-    rel_dest_path = vault.normalize_path(dest)
+    vault.tracker.validate_tracked(dest)
 
     with (
         vault.storage as conn,
-        conn.get_mutator(rel_src_path) as src_mut,
-        conn.get_mutator(rel_dest_path) as dest_mut,
+        conn.get_mutator(src) as src_mut,
+        conn.get_mutator(dest) as dest_mut,
     ):
         data = dict(src_mut)
         src_mut.clear()

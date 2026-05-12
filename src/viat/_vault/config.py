@@ -6,5 +6,5 @@ class ViatVaultStaticConfig:
     """Static (i.e. known before initialization) configuration for the vault."""
 
     skip_validation: bool = False
-    """Skip schema validation."""
+    """Skip tracker and schema validation."""
 

@@ -2,7 +2,7 @@ import os
 import pathlib
 
 from viat._config import ConfigLoader, load_storage_from_config, load_tracker_from_config
-from viat.exceptions import ViatUntrackedFileWarning, ViatVaultError, process_warning
+from viat.exceptions import ViatVaultError
 from viat.protocols import ViatAttributeStorage, ViatFileTracker
 
 from .config import ViatVaultStaticConfig
@@ -81,22 +81,6 @@ class ViatVault:
         self.static_config = static_config or ViatVaultStaticConfig()
         self.tracker = load_tracker_from_config(self.resolver, self.static_config, config_loader)
         self.storage = load_storage_from_config(self.resolver, self.static_config, config_loader)
-
-    def normalize_path(self, path: pathlib.Path | str) -> pathlib.Path:
-        """Normalize a path so that it can be used with the vault's storage and verify that it is tracked.
-
-        Args:
-            path: Any path.
-
-        Returns:
-            The resolved path.
-        """
-        rel_path = self.resolver.relativize(pathlib.Path(path))
-
-        if not self.tracker.is_tracked(rel_path):
-            process_warning(ViatUntrackedFileWarning(rel_path), stacklevel=2)
-
-        return rel_path
 
 
 def resolve_enforced_vault_path() -> pathlib.Path | None:

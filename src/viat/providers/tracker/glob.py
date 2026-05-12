@@ -1,5 +1,4 @@
 """The glob [`ViatFileTracker`][viat.protocols.ViatFileTracker] provider."""
-
 import pathlib
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
@@ -7,7 +6,9 @@ from typing import override
 
 from wcmatch import glob
 
-from viat.exceptions import ViatConfigError
+from viat._vault.config import ViatVaultStaticConfig
+from viat._vault.resolver import ViatPathResolver
+from viat.exceptions import ViatConfigError, ViatUntrackedFileWarning, emit_warning
 from viat.protocols import ViatFileTracker
 
 
@@ -58,13 +59,28 @@ class GlobFileTracker(ViatFileTracker):
 
     Args:
         config: All configuration required for the tracker.
+        resolver: A path resolver used to process incoming paths.
+        static_config: Static configuration for the vault.
     """
 
     config: GlobFileTrackerConfig
-    """The configuration used to initialize the trackers."""
+    """The configuration used to initialize the tracker."""
 
-    def __init__(self, config: GlobFileTrackerConfig) -> None:
+    resolver: ViatPathResolver | None
+    """The resolver used to initialize the storage."""
+
+    static_config: ViatVaultStaticConfig
+    """The vault's static configuration."""
+
+    def __init__(
+        self,
+        config: GlobFileTrackerConfig,
+        resolver: ViatPathResolver | None = None,
+        static_config: ViatVaultStaticConfig | None = None,
+    ) -> None:
         self.config = config
+        self.resolver = resolver
+        self.static_config = static_config or ViatVaultStaticConfig()
 
     def _glob_flags(self) -> int:
         return sum(getattr(glob, f) for f in self.config.flags)
@@ -74,6 +90,20 @@ class GlobFileTracker(ViatFileTracker):
         for raw_path in glob.glob(self.config.patterns, root_dir=self.config.root, flags=self._glob_flags()):
             yield pathlib.Path(raw_path)
 
+    def _resolve_path(self, path: pathlib.Path | str) -> pathlib.Path:
+        return self.resolver.relativize(path) if self.resolver else pathlib.Path(path)
+
     @override
-    def is_tracked(self, path: pathlib.Path) -> bool:
-        return glob.globmatch(path, self.config.patterns, root_dir=self.config.root, flags=self._glob_flags() | glob.REALPATH)
+    def is_tracked(self, path: pathlib.Path | str) -> bool:
+        rel_path = self._resolve_path(path)
+        return glob.globmatch(rel_path, self.config.patterns, root_dir=self.config.root, flags=self._glob_flags() | glob.REALPATH)
+
+    @override
+    def validate_tracked(self, path: pathlib.Path | str) -> None:
+        if self.static_config.skip_validation:
+            return
+
+        rel_path = self._resolve_path(path)
+
+        if not self.is_tracked(rel_path):
+            emit_warning(ViatUntrackedFileWarning(rel_path), stacklevel=2)

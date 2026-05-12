@@ -1,12 +1,13 @@
 """Tools for tracking which files are known to viat."""
-
 import pathlib
 from collections.abc import Iterable
 from typing import override
 
 import pygit2
 
-from viat.exceptions import ViatFileTrackerError
+from viat._vault.config import ViatVaultStaticConfig
+from viat._vault.resolver import ViatPathResolver
+from viat.exceptions import ViatFileTrackerError, ViatUntrackedFileWarning, emit_warning
 from viat.protocols import ViatFileTracker
 
 from .config import GitFileTrackerConfig
@@ -17,20 +18,35 @@ class GitFileTracker(ViatFileTracker):
 
     Args:
         config: All configuration required for the tracker.
+        resolver: A path resolver used to process incoming paths.
+        static_config: Static configuration for the vault.
     """
-
-    _repo: pygit2.Repository
 
     config: GitFileTrackerConfig
     """The configuration used to initialize the tracker."""
 
-    def __init__(self, config: GitFileTrackerConfig) -> None:
+    resolver: ViatPathResolver | None
+    """The resolver used to initialize the storage."""
+
+    static_config: ViatVaultStaticConfig
+    """The vault's static configuration."""
+
+    _repo: pygit2.Repository
+
+    def __init__(
+        self,
+        config: GitFileTrackerConfig,
+        resolver: ViatPathResolver | None = None,
+        static_config: ViatVaultStaticConfig | None = None,
+    ) -> None:
         try:
             self._repo = pygit2.Repository(config.repo_root.as_posix())
         except pygit2.GitError as err:
             raise ViatFileTrackerError('The tracker root is not a git repository') from err
 
         self.config = config
+        self.resolver = resolver
+        self.static_config = static_config or ViatVaultStaticConfig()
 
     def _recurse_into_tree(self, tree: pygit2.Tree, base_path: pathlib.Path) -> Iterable[pathlib.Path]:
         for obj in tree:
@@ -58,16 +74,26 @@ class GitFileTracker(ViatFileTracker):
 
         yield from self._recurse_into_tree(ref.tree, self.config.repo_root)
 
+    def _resolve_path(self, path: pathlib.Path | str) -> pathlib.Path:
+        return self.resolver.relativize(path) if self.resolver else pathlib.Path(path)
+
     @override
-    def is_tracked(self, path: pathlib.Path) -> bool:
-        try:
-            relative = path.relative_to(self.config.repo_root)
-        except ValueError:
-            relative = path
+    def is_tracked(self, path: pathlib.Path | str) -> bool:
+        rel_path = self._resolve_path(path)
 
         try:
-            self._repo.blame(relative.as_posix())
+            self._repo.blame(rel_path.as_posix())
         except (KeyError, ValueError):
             return False
 
         return True
+
+    @override
+    def validate_tracked(self, path: pathlib.Path | str) -> None:
+        if self.static_config.skip_validation:
+            return
+
+        rel_path = self._resolve_path(path)
+
+        if not self.is_tracked(rel_path):
+            emit_warning(ViatUntrackedFileWarning(rel_path), stacklevel=2)

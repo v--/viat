@@ -34,13 +34,13 @@ class ViatPathResolver:
         """The root directory of the vault."""
         return self._root / VIAT_SUBDIR / f'config.{ext}'
 
-    def relativize(self, path: pathlib.Path) -> pathlib.Path:
+    def relativize(self, path: pathlib.Path | str) -> pathlib.Path:
         """Relativize a path so that it can be used with an attribute storage.
 
         Args:
             path: The path to relativize. If it is already relative, it is left as-is.
         """
         try:
-            return path.relative_to(self._root)
+            return pathlib.Path(path).relative_to(self._root)
         except ValueError:
-            return path
+            return pathlib.Path(path)

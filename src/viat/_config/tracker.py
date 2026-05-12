@@ -10,19 +10,19 @@ from viat.providers.tracker import GitFileTracker, GitFileTrackerConfig, GlobFil
 from viat.support.json import JsonArray
 
 
-def load_tracker_from_config(resolver: ViatPathResolver, static_config: ViatVaultStaticConfig, loader: ConfigLoader) -> ViatFileTracker:  # noqa: ARG001
+def load_tracker_from_config(resolver: ViatPathResolver, static_config: ViatVaultStaticConfig, loader: ConfigLoader) -> ViatFileTracker:
     match loader.get_str('tracker', 'provider'):
         case 'glob' | None:
-            return load_glob_tracker_from_config(resolver, loader)
+            return load_glob_tracker_from_config(resolver, static_config, loader)
 
         case 'git':
-            return load_git_tracker_from_config(resolver, loader)
+            return load_git_tracker_from_config(resolver, static_config, loader)
 
         case _:
             raise ViatConfigError('The tracker.provider option must be either "glob" or "git"')
 
 
-def load_glob_tracker_from_config(resolver: ViatPathResolver, loader: ConfigLoader) -> ViatFileTracker:
+def load_glob_tracker_from_config(resolver: ViatPathResolver, static_config: ViatVaultStaticConfig, loader: ConfigLoader) -> ViatFileTracker:
     tracker_config = GlobFileTrackerConfig(
         root=loader.get_path('tracker', 'glob', 'root', root=resolver.get_root(), default=resolver.get_root()),
         patterns=load_glob_tracker_patterns_from_config(loader),
@@ -30,7 +30,7 @@ def load_glob_tracker_from_config(resolver: ViatPathResolver, loader: ConfigLoad
         flags=loader.get_str('tracker', 'glob', 'flags', default=GlobFileTrackerConfig.flags),
     )
 
-    return GlobFileTracker(tracker_config)
+    return GlobFileTracker(tracker_config, resolver, static_config)
 
 
 def load_glob_tracker_patterns_from_config(loader: ConfigLoader) -> Sequence[str]:
@@ -49,11 +49,11 @@ def load_glob_tracker_patterns_from_config(loader: ConfigLoader) -> Sequence[str
             raise ViatConfigError('The tracker.glob.patterns option must be an array of glob patterns')
 
 
-def load_git_tracker_from_config(resolver: ViatPathResolver, loader: ConfigLoader) -> ViatFileTracker:
+def load_git_tracker_from_config(resolver: ViatPathResolver, static_config: ViatVaultStaticConfig, loader: ConfigLoader) -> ViatFileTracker:
     tracker_config = GitFileTrackerConfig(
         repo_root=loader.get_path('tracker', 'git', 'repo_root', root=resolver.get_root(), default=resolver.get_root()),
         revision=loader.get_str('tracker', 'git', 'revision', default=GitFileTrackerConfig.revision),
     )
 
-    return GitFileTracker(tracker_config)
+    return GitFileTracker(tracker_config, resolver, static_config)
 

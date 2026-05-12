@@ -1,3 +1,4 @@
+from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatIntegrityError
 from viat.protocols import ViatFileTracker
 
@@ -11,5 +12,5 @@ class GitFileTracker(ViatFileTracker):
         viat.exceptions.ViatIntegrityError: Always
     """
 
-    def __init__(self, _config: GitFileTrackerConfig) -> None:
+    def __init__(self, config: GitFileTrackerConfig, resolver: ViatPathResolver) -> None:  # noqa: ARG002
         raise ViatIntegrityError('pygit2 is required for the git file tracker')

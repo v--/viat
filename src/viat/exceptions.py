@@ -188,7 +188,7 @@ def with_warning_handler(handler: Callable[[ViatWarning, int], bool | None]) -> 
         del _warning_handlers[index]
 
 
-def process_warning(warning: ViatWarning, stacklevel: int) -> None:
+def emit_warning(warning: ViatWarning, stacklevel: int) -> None:
     """A wrapper around [`warnings.warn`][] that processes intermediate handlers.
 
     If any of the handlers return `True`, the next ones, including [`warnings.warn`][], are not processed.

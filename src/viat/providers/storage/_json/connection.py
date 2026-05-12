@@ -6,12 +6,13 @@ from typing import override
 
 import fastjsonschema
 
+from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import (
     ViatAttributeStorageError,
     ViatMalformedStoredDataError,
     ViatStoredDataValidationWarning,
     ViatValidationError,
-    process_warning,
+    emit_warning,
 )
 from viat.protocols import ViatAttributeStorageConnection
 from viat.support.json import Json, MutableJsonObject
@@ -26,16 +27,32 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
 
     Args:
         payload: The initial state of the storage.
+        resolver: A path resolver used when creating readers and mutators.
         validator: A validator to be used on the contents of the storage.
     """
 
     payload: MutableJsonObject
+    """The payload used to initialize the connection."""
+
     validator: Callable[[Json], None] | None
+    """The validator used to initialize the connection."""
+
+    resolver: ViatPathResolver | None
+    """The resolver used to initialize the connection."""
+
     has_mutations: bool
+    """An indicator whether the connection payload has been mutated."""
+
     _locked: MutableSet[pathlib.Path]
 
-    def __init__(self, payload: MutableJsonObject, validator: Callable[[Json], None] | None) -> None:
+    def __init__(
+        self,
+        payload: MutableJsonObject,
+        resolver: ViatPathResolver | None = None,
+        validator: Callable[[Json], None] | None = None,
+    ) -> None:
         self.payload = payload
+        self.resolver =resolver
         self.validator = validator
         self.has_mutations = False
         self._locked = set[pathlib.Path]()
@@ -49,55 +66,58 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
                     try:
                         self.validator(value)
                     except fastjsonschema.JsonSchemaValueException as err:
-                        process_warning(
+                        emit_warning(
                             ViatStoredDataValidationWarning(pathlib.Path(key), err),
                             stacklevel=2,
                         )
 
+    def _resolve_path(self, path: pathlib.Path | str) -> pathlib.Path:
+        return self.resolver.relativize(path) if self.resolver else pathlib.Path(path)
+
     @contextlib.contextmanager
     def get_reader(self, path: pathlib.Path | str) -> Generator[JsonAttributeReader]:
-        npath = pathlib.Path(path)
+        rel_path = self._resolve_path(path)
 
-        if npath in self._locked:
-            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {npath.as_posix()!r}')
+        if rel_path in self._locked:
+            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {rel_path.as_posix()!r}')
 
-        stored_data = self.payload.get(npath.as_posix())
+        stored_data = self.payload.get(rel_path.as_posix())
 
         if stored_data is not None and not isinstance(stored_data, MutableJsonObject):
-            raise ViatMalformedStoredDataError(npath)
+            raise ViatMalformedStoredDataError(rel_path)
 
         payload = stored_data or {}
-        self._locked.add(npath)
+        self._locked.add(rel_path)
 
         try:
-            yield JsonAttributeReader(npath, payload)
+            yield JsonAttributeReader(rel_path, payload)
         finally:
-            self._locked.remove(npath)
+            self._locked.remove(rel_path)
 
     @contextlib.contextmanager
     def get_mutator(self, path: pathlib.Path | str) -> Generator[JsonAttributeMutator]:
-        npath = pathlib.Path(path)
+        rel_path = self._resolve_path(path)
 
-        if npath in self._locked:
-            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {npath.as_posix()!r}')
+        if rel_path in self._locked:
+            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {rel_path.as_posix()!r}')
 
-        stored_data = self.payload.get(npath.as_posix())
+        stored_data = self.payload.get(rel_path.as_posix())
 
         if stored_data is not None and not isinstance(stored_data, MutableJsonObject):
-            raise ViatMalformedStoredDataError(npath)
+            raise ViatMalformedStoredDataError(rel_path)
 
         payload = stored_data or {}
-        self._locked.add(npath)
+        self._locked.add(rel_path)
         self.has_mutations = True
 
         try:
-            yield JsonAttributeMutator(npath, payload)
+            yield JsonAttributeMutator(rel_path, payload)
         finally:
-            self._locked.remove(npath)
+            self._locked.remove(rel_path)
 
         if len(payload) == 0:
             if stored_data is not None:
-                del self.payload[npath.as_posix()]
+                del self.payload[rel_path.as_posix()]
 
             return
 
@@ -105,9 +125,9 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
             try:
                 self.validator(payload)
             except fastjsonschema.JsonSchemaValueException as err:
-                raise ViatValidationError(npath) from err
+                raise ViatValidationError(rel_path) from err
 
-        self.payload[npath.as_posix()] = payload
+        self.payload[rel_path.as_posix()] = payload
 
     @override
     def iter_known_paths(self) -> Iterable[pathlib.Path]:
