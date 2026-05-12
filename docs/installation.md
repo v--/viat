@@ -10,3 +10,5 @@ uv tool install viat
 ```
 
 The git tracker requires the `git` extra.
+
+For installation from source, see the [repository README](https://github.com/v--/viat#installation).

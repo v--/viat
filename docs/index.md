@@ -13,6 +13,6 @@ viat set file.pdf --raw attr value
 puts the following into `storage.toml`:
 
 ```toml
-[file.pdf]
+["file.pdf"]
 attr = "value"
 ```

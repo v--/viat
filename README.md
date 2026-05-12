@@ -13,7 +13,7 @@ viat set file.pdf --raw attr value
 puts the following into `storage.toml`:
 
 ```toml
-[file.pdf]
+["file.pdf"]
 attr = "value"
 ```
 
@@ -125,7 +125,7 @@ For such cases, we provide the helpers `viat mv` and `viat rm`, but otherwise av
 
 ### Programmatic usage
 
-The programmatic usage is straightforward enough because of the [API reference](https://viat.readthedocs.io/). Here is a brief continuation of the above example:
+The programmatic usage is straightforward enough because of the [API reference](https://viat.readthedocs.io/en/latest/api/protocols/). Here is a brief continuation of the above example:
 
 ```python
 vault = autoload_vault()
@@ -137,26 +137,14 @@ assert vault.tracker.is_tracked('tractatus.pdf')
 with vault.storage as conn:
     # The inner lock-based context managers allow either read-only or read-write operations.
 
-    # The following only reads:
+    # Readers are Mapping instances.
     with conn.get_reader('tractatus.pdf') as reader:
         print(mut['year'])
 
-    # The following only writes (but can obviously be used for reading):
+    # Mutators are MutableMapping instances.
     with conn.get_mutator('tractatus.pdf') as mut:
         mut['year'] = 1921
 ```
-
-## Motivation
-
-When managing lots of files, there comes a point when metadata needs to be attached to them somehow.
-
-* Different file systems offer [extended file attributes](https://en.wikipedia.org/wiki/Extended_file_attributes). Unfortunately, poor software support reduces their utility. For example, `curl --xattr <url>` will record some attributes, but they will be lost on copy (with GNU `cp` at least) and will not be tracked by git.
-
-* [git attributes](https://git-scm.com/docs/gitattributes) are obviously supported by git, but other tools have to consult git in order to use them. Furthermore, there is no convenient mechanism for setting git attributes.
-
-* XMP ([extensible metadata platform](https://developer.adobe.com/xmp/docs/)) files are designed to be used by arbitrary tools and can be easily tracked using version control, but are cumbersome to manage.
-
-Perhaps I am missing some other approaches, but at this point it should be clear that there is no convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. At some point I decided to refine the script, and so viat was born.
 
 ## Installation
 
@@ -183,8 +171,34 @@ Sometimes a particular feature branch need to be tested. For installing a fixed 
 uv tool install viat --from git+https://github.com/v--/viat@rev
 ```
 
-The documentation, including the man page, can be built using
+To install `viat` from a cloned repository, you can use the following:
+
+```shell
+uv sync
+uv build --wheel
+# Once built, we can install using uv
+uv tool install viat --from dist/*.whl
+# or pipx
+pipx install --include-deps dist/*.whl
+```
+
+Tasks inside the repository like linting and testing use are summarized in [`poe.toml`](./poe.toml) (configuration for [poethepoet](https://pypi.org/project/poethepoet/)). For example, building the documentation requires some hacks, but can be done using a single command:
 
 ```shell
 uv run poe docs-build
 ```
+
+> [!TIP]
+> An [AUR package](https://aur.archlinux.org/packages/viat) is available for reference, as well as a [GitHub Action](./.github/workflows/test.yaml). If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=viat).
+
+## Motivation
+
+When managing lots of files, there comes a point when metadata needs to be attached to them somehow.
+
+* Different file systems offer [extended file attributes](https://en.wikipedia.org/wiki/Extended_file_attributes). Unfortunately, poor software support reduces their utility. For example, `curl --xattr <url>` will record some attributes, but they will be lost on copy (with GNU `cp` at least) and will not be tracked by git.
+
+* [git attributes](https://git-scm.com/docs/gitattributes) are obviously supported by git, but other tools have to consult git in order to use them. Furthermore, there is no convenient mechanism for setting git attributes.
+
+* XMP ([extensible metadata platform](https://developer.adobe.com/xmp/docs/)) files are designed to be used by arbitrary tools and can be easily tracked using version control, but are cumbersome to manage.
+
+Perhaps I am missing some other approaches, but at this point it should be clear that there is no convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. At some point I decided to refine the script, and so viat was born.
