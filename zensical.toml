@@ -9,6 +9,7 @@ repo_name = "v--/viat"
 nav = [
   { "Index" = "index.md" },
   { "Installation" = "installation.md" },
+  { "Configuration" = "configuration.md" },
   { "Usage" = "usage.md" },
   { "Man page" = "man.md" },
   { "API Reference" = [

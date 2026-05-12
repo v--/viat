@@ -16,5 +16,3 @@ puts the following into `storage.toml`:
 [file.pdf]
 attr = "value"
 ```
-
-This site features [installation instructions](./installation), an extensive [usage tutorial](./usage), as well as a [man page](./man) and an [API reference](/api/protocols).
