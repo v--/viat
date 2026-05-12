@@ -1,8 +1,7 @@
-import subprocess
-import importlib.metadata
 import io
 import pathlib
 import re
+import subprocess
 from inspect import cleandoc
 from textwrap import dedent
 
@@ -16,8 +15,7 @@ ROOT = pathlib.Path(__file__).parent.parent.parent
 
 
 def build_man_page() -> None:
-    version = importlib.metadata.version('viat')
-    date_str = extract_date_from_changelog(version)
+    version, date_str = extract_version_and_date_from_changelog()
     pathlib.Path('dist/man').mkdir(parents=True, exist_ok=True)
     extracted_readme_usage = extract_usage_from_readme(only_cli=True)
 
@@ -94,15 +92,13 @@ def build_man_md() -> None:
         file.write('```\n')
 
 
-def extract_date_from_changelog(version: str) -> str:
-    line_start = f'## {version} - '
-
+def extract_version_and_date_from_changelog() -> tuple[str, str]:
     with open(ROOT / 'CHANGELOG.md') as file:
         for line in file:
-            if line.startswith(line_start):
-                return line[len(line_start):].strip()
+            if match := re.match('## (?P<version>[\\d.]+) - (?P<date>[\\d-]+)', line):
+                return match.group('version'), match.group('date')
 
-        raise SystemExit(f'Could not find the build date for version {version}')
+        raise SystemExit('Could not determine the version and date from the changelog')
 
 
 def extract_usage_from_readme(only_cli: bool) -> str:
