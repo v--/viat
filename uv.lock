@@ -864,7 +864,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "click", specifier = ">=2.21" },
+    { name = "click", specifier = ">=8.3" },
     { name = "fastjsonschema", specifier = ">=2.21" },
     { name = "pygit2", marker = "extra == 'git'", specifier = ">=1.19" },
     { name = "tomlkit", specifier = ">=0.13" },

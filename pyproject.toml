@@ -12,7 +12,7 @@ classifiers = [
   "Topic :: Utilities",
 ]
 dependencies = [
-  "click (>=2.21)",
+  "click (>=8.3)",
   "fastjsonschema (>=2.21)",
   "tomlkit (>=0.13)",
   "wcmatch (>=10)",
