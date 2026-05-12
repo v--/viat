@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.9.2 - 2026-05-12
 
-* Configure publishing on PyPI
+* Configure publishing on PyPI.
 
 ## 0.9.1 - 2026-05-12
 
-* Fix man file build complications
+* Fix man file build complications.
 
 ## 0.9.0 - 2026-05-12
 
-* Initial release
+* Initial release.
