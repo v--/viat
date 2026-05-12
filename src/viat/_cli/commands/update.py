@@ -13,7 +13,8 @@ from viat.vault import autoload_vault
 @viat.command()
 @click.argument('path', type=pathlib.Path)
 @click.argument('attrs', type=str)
-def update(path: pathlib.Path, attrs: str) -> None:
+@click.pass_context
+def update(ctx: click.Context, path: pathlib.Path, attrs: str) -> None:
     """Merge the stored attributes for a tracked file with a new JSON object."""
     try:
         parsed = json.loads(attrs)
@@ -23,7 +24,7 @@ def update(path: pathlib.Path, attrs: str) -> None:
     if not isinstance(parsed, JsonObject):
         raise ViatMalformedDataError(f'Expected a JSON object, but got {attrs!r}')
 
-    vault = autoload_vault()
+    vault = autoload_vault(ctx.obj.vault_config)
     rel_path = vault.normalize_path(path)
 
     with vault.storage as conn, conn.get_mutator(rel_path) as mut:

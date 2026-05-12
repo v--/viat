@@ -7,9 +7,10 @@ from viat.vault import autoload_vault
 
 @viat.command()
 @click.option('-j', '--json', 'output_json', is_flag=True, help='Print the list in JSON format.')
-def stale(output_json: bool) -> None:
+@click.pass_context
+def stale(ctx: click.Context, output_json: bool) -> None:
     """Print out the paths with storage entries that are not tracked."""
-    vault = autoload_vault()
+    vault = autoload_vault(ctx.obj.vault_config)
 
     with vault.storage as conn:
         stale_paths = [path for path in conn.iter_known_paths() if not vault.tracker.is_tracked(path)]

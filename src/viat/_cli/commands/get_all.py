@@ -9,9 +9,10 @@ from viat.vault import autoload_vault
 
 @viat.command()
 @click.argument('path', type=pathlib.Path)
-def get_all(path: pathlib.Path) -> None:
+@click.pass_context
+def get_all(ctx: click.Context, path: pathlib.Path) -> None:
     """Retrieve all stored attributes for a tracked file."""
-    vault = autoload_vault()
+    vault = autoload_vault(ctx.obj.vault_config)
     rel_path = vault.normalize_path(path)
 
     with vault.storage as conn, conn.get_reader(rel_path) as reader:

@@ -1,4 +1,5 @@
 """The implementation for vaults."""
+
 import os
 import pathlib
 
@@ -7,6 +8,17 @@ from viat.exceptions import ViatUntrackedFileWarning, ViatVaultError, process_wa
 from viat.protocols import ViatAttributeStorage, ViatFileTracker
 from viat.support.path_resolver import VIAT_SUBDIR, ViatPathResolver
 
+from ._vault_config import ViatVaultStaticConfig
+
+
+__all__ = [
+    'ViatVault',
+    'ViatVaultStaticConfig',
+    'autoload_vault',
+    'locate_existing_vault_root',
+    'resolve_enforced_vault_path',
+]
+
 
 class ViatVault:
     """The default provider that stores all configuration and data in a `.viat` subdirectory.
@@ -14,22 +26,34 @@ class ViatVault:
     Args:
         root: The root path of the vault.
 
-            To find a vault root from a subdirectory, you can use the [`locate`][.locate] factory method instead.
+            To find a vault root from a subdirectory, you can use the helper
+            [`locate_existing_vault_root`][.locate_existing_vault_root].
+
+        static_config: Static configuration for the vault.
 
     Raises:
         viat.exceptions.ViatConfigError: If the vault is misconfigured.
     """
 
     resolver: ViatPathResolver
+    """A resolver for paths related to the vault."""
+
+    static_config: ViatVaultStaticConfig
+    """The vault's static configuration."""
+
     tracker: ViatFileTracker
+    """The vault's tracker."""
+
     storage: ViatAttributeStorage
+    """The vault's storage."""
 
     @staticmethod
-    def initialize(root: pathlib.Path) -> 'ViatVault':
+    def initialize(root: pathlib.Path, static_config: ViatVaultStaticConfig | None = None) -> 'ViatVault':
         """Initialize a new vault.
 
         Args:
             root: The root of the new vault.
+            static_config: Static configuration for the vault.
 
         Returns:
             A newly initialized vault
@@ -47,9 +71,9 @@ class ViatVault:
             raise ViatVaultError('A vault has already been set up here') from err
 
         resolver.get_config('toml').touch()
-        return ViatVault(root)
+        return ViatVault(root, static_config)
 
-    def __init__(self, root: pathlib.Path) -> None:
+    def __init__(self, root: pathlib.Path, static_config: ViatVaultStaticConfig | None = None) -> None:
         self.resolver = ViatPathResolver(root)
 
         try:
@@ -61,12 +85,13 @@ class ViatVault:
 
         if config_loader := ConfigLoader.try_load_toml_file(self.resolver.get_config('toml')):
             if self.resolver.get_config('json').exists():
-                raise ViatVaultError(f'Cannot have both config.toml and config.json in the {VIAT_SUBDIR} subdirectory')
+                raise ViatVaultError(f'Cannot have both static_config.toml and static_config.json in the {VIAT_SUBDIR} subdirectory')
         else:
             config_loader = ConfigLoader.try_load_json_file(self.resolver.get_config('json')) or ConfigLoader({})
 
-        self.tracker = load_tracker_from_config(self.resolver, config_loader)
-        self.storage = load_storage_from_config(self.resolver, config_loader)
+        self.static_config = static_config or ViatVaultStaticConfig()
+        self.tracker = load_tracker_from_config(self.resolver, self.static_config, config_loader)
+        self.storage = load_storage_from_config(self.resolver, self.static_config, config_loader)
 
     def normalize_path(self, path: pathlib.Path | str) -> pathlib.Path:
         """Normalize a path so that it can be used with the vault's storage and verify that it is tracked.
@@ -126,8 +151,7 @@ def locate_existing_vault_root(base: pathlib.Path) -> pathlib.Path:
     raise ViatVaultError('Could not locate vault')
 
 
-
-def autoload_vault() -> ViatVault:
+def autoload_vault(static_config: ViatVaultStaticConfig | None = None) -> ViatVault:
     """Try to load a vault without any manual configuration.
 
     Returns:
@@ -137,6 +161,9 @@ def autoload_vault() -> ViatVault:
         viat.exceptions.ViatCliError: If the loading fails.
     """
     try:
-        return ViatVault(resolve_enforced_vault_path() or locate_existing_vault_root(pathlib.Path.cwd()))
+        return ViatVault(
+            resolve_enforced_vault_path() or locate_existing_vault_root(pathlib.Path.cwd()),
+            static_config=static_config,
+        )
     except ViatVaultError as err:
         raise ViatVaultError('Could not load viat vault') from err

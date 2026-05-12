@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+* Allow disabling validation.
 * Fix not being to select the JSON storage provider.
 * Remove short option for tracked --no-data.
 * Move error stringification into the error hierarchy.

@@ -11,9 +11,10 @@ from viat.vault import autoload_vault
 @click.argument('path', type=pathlib.Path)
 @click.argument('attr', type=str)
 @click.option('-r', '--raw', is_flag=True, help='Do not quote strings.')
-def get(path: pathlib.Path, attr: str, raw: bool) -> None:
+@click.pass_context
+def get(ctx: click.Context, path: pathlib.Path, attr: str, raw: bool) -> None:
     """Retrieve a stored attribute for a tracked file."""
-    vault = autoload_vault()
+    vault = autoload_vault(ctx.obj.vault_config)
     rel_path = vault.normalize_path(path)
 
     with vault.storage as conn, conn.get_reader(rel_path) as reader:

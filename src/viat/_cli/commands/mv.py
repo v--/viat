@@ -11,12 +11,13 @@ from viat.vault import autoload_vault
 @click.argument('src', type=pathlib.Path)
 @click.argument('dest', type=pathlib.Path)
 @click.option('-f', '--force', is_flag=True, help='Move even if the destination exists.')
-def mv(src: pathlib.Path, dest: pathlib.Path, force: bool) -> None:
+@click.pass_context
+def mv(ctx: click.Context, src: pathlib.Path, dest: pathlib.Path, force: bool) -> None:
     """Move a file along with its metadata."""
     if dest.exists() and not force:
         raise ViatVaultError(f'File {dest.as_posix()!r} already exists')
 
-    vault = autoload_vault()
+    vault = autoload_vault(ctx.obj.vault_config)
     rel_src_path = vault.normalize_path(src)
 
     try:

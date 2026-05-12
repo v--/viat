@@ -19,7 +19,8 @@ if TYPE_CHECKING:
 @click.argument('path', type=pathlib.Path)
 @click.argument('attr', type=str)
 @click.argument('value', type=str)
-def set_(path: pathlib.Path, attr: str, value: str, raw: bool) -> None:
+@click.pass_context
+def set_(ctx: click.Context, path: pathlib.Path, attr: str, value: str, raw: bool) -> None:
     """Update a stored attribute for a tracked file.
 
     Unless the --raw parameter is given, we treat the value as JSON.
@@ -34,7 +35,7 @@ def set_(path: pathlib.Path, attr: str, value: str, raw: bool) -> None:
         except json.JSONDecodeError as err:
             raise ViatMalformedDataError(f'Malformed JSON string {value!r}') from err
 
-    vault = autoload_vault()
+    vault = autoload_vault(ctx.obj.vault_config)
     rel_path = vault.normalize_path(path)
 
     with vault.storage as conn, conn.get_mutator(rel_path) as mut:

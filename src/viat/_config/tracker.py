@@ -2,6 +2,7 @@ from collections.abc import Sequence
 from typing import cast
 
 from viat._config.loader import ConfigLoader
+from viat._vault_config import ViatVaultStaticConfig
 from viat.exceptions import ViatConfigError
 from viat.protocols import ViatFileTracker
 from viat.providers.tracker import GitFileTracker, GitFileTrackerConfig, GlobFileTracker, GlobFileTrackerConfig
@@ -9,7 +10,7 @@ from viat.support.json import JsonArray
 from viat.support.path_resolver import ViatPathResolver
 
 
-def load_tracker_from_config(resolver: ViatPathResolver, loader: ConfigLoader) -> ViatFileTracker:
+def load_tracker_from_config(resolver: ViatPathResolver, static_config: ViatVaultStaticConfig, loader: ConfigLoader) -> ViatFileTracker:  # noqa: ARG001
     match loader.get_str('tracker', 'provider'):
         case 'glob' | None:
             return load_glob_tracker_from_config(resolver, loader)

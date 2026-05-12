@@ -143,6 +143,29 @@ class TestGet:
             assert result.stdout == '"value"\n'
             assert result.stderr == "Warning: Validation error in stored data for 'README.md': data.key must be number.\n"
 
+    def test_invalid_stored_with_disabled_validation(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
+            mut['key'] = 'value'
+
+        schema_path = vault_with_readme.resolver.get_viat().joinpath('schema.json')
+        schema = dedent("""\
+            {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "number"
+                    }
+                }
+            }""",
+        )
+
+        schema_path.write_text(schema)
+
+        with contextlib.chdir(vault_with_readme.resolver.get_root()):
+            result = click_runner.invoke(viat, ['--skip-validation', 'get', 'README.md', 'key'])
+            assert result.stdout == '"value"\n'
+            assert result.stderr == ''
+
 
 class TestGetAll:
     def test_valid(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:

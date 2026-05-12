@@ -14,7 +14,7 @@ from .exceptions import (
 from .protocols import ViatAttributeMutator, ViatAttributeStorage, ViatAttributeStorageConnection, ViatFileTracker
 from .providers.storage import __all__ as storage_all
 from .providers.tracker import __all__ as tracker_all
-from .vault import ViatVault, autoload_vault
+from .vault import __all__ as vault_all
 
 
 __all__ = [  # noqa: PLE0604
@@ -33,6 +33,7 @@ __all__ = [  # noqa: PLE0604
     'ViatVault',
     'ViatVaultError',
     'ViatWarning',
+    *vault_all,
     *storage_all,
     *tracker_all,
 ]

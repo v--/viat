@@ -9,9 +9,10 @@ from viat.vault import autoload_vault
 
 @viat.command()
 @click.argument('path', type=pathlib.Path)
-def rm(path: pathlib.Path) -> None:
+@click.pass_context
+def rm(ctx: click.Context, path: pathlib.Path) -> None:
     """Remove a file along with its metadata."""
-    vault = autoload_vault()
+    vault = autoload_vault(ctx.obj.vault_config)
     rel_path = vault.normalize_path(path)
 
     try:
