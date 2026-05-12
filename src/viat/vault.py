@@ -132,6 +132,6 @@ def autoload_vault() -> ViatVault:
         viat.exceptions.ViatCliError: If the loading fails.
     """
     try:
-        return ViatVault(autoresolve_vault_path())
+        return ViatVault.locate(autoresolve_vault_path())
     except ViatVaultError as err:
         raise ViatVaultError('Could not load viat vault') from err
