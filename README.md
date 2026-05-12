@@ -1,5 +1,7 @@
 # Viat
 
+[![Tests](https://github.com/v--/viat/actions/workflows/test.yml/badge.svg)](https://github.com/kcroker/dpsprep/actions/workflows/test.yml) [![PyPI Package](https://img.shields.io/pypi/v/viat)](https://pypi.org/project/viat/) [![AUR Package](https://img.shields.io/aur/version/viat)](https://aur.archlinux.org/packages/viat)
+
 A tool for managing **vi**rtual file **at**tributes.
 
 Viat allows recording file attributes in a plain text file. The main unit of operation is a vault, which is determined by `.viat` subdirectory. In the simplest case, this subdirectory contains `config.toml`, `storage.toml` and possibly `schema.json`.
