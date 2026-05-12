@@ -1,5 +1,3 @@
-"""Path resolution for vaults."""
-
 import pathlib
 
 

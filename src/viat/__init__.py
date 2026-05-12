@@ -12,13 +12,10 @@ from .exceptions import (
     ViatWarning,
 )
 from .protocols import ViatAttributeMutator, ViatAttributeStorage, ViatAttributeStorageConnection, ViatFileTracker
-from .providers.storage import __all__ as storage_all
-from .providers.tracker import __all__ as tracker_all
-from .vault import __all__ as vault_all
+from .vault import ViatVault, ViatVaultStaticConfig, autoload_vault
 
 
-__all__ = [  # noqa: PLE0604
-    'autoload_vault',
+__all__ = [
     'ViatAttributeMutator',
     'ViatAttributeStorage',
     'ViatAttributeStorageConnection',
@@ -31,9 +28,10 @@ __all__ = [  # noqa: PLE0604
     'ViatMissingAttributeError',
     'ViatValidationError',
     'ViatVault',
+    'ViatVault',
     'ViatVaultError',
+    'ViatVaultStaticConfig',
     'ViatWarning',
-    *vault_all,
-    *storage_all,
-    *tracker_all,
+    'autoload_vault',
+    'autoload_vault',
 ]

@@ -22,9 +22,7 @@ nav = [
     ] },
     { "Support" = [
       { "JSON" = "api/support/json.md" },
-      { "TOML" = "api/support/toml.md" },
       { "stdlib protocols" = "api/support/stdlib_protocols.md" },
-      { "Path resolver" = "api/support/path_resolver.md" },
     ] },
   ] },
 ]

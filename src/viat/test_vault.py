@@ -4,9 +4,7 @@ from textwrap import dedent
 import pytest
 
 from viat.exceptions import ViatConfigError, ViatVaultError
-from viat.support.path_resolver import VIAT_SUBDIR, ViatPathResolver
-
-from .vault import ViatVault, locate_existing_vault_root
+from viat.vault import VIAT_SUBDIR, ViatPathResolver, ViatVault, locate_existing_vault_root
 
 
 class TestVaultInitialize:

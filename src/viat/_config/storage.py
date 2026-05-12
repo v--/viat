@@ -1,5 +1,6 @@
 from viat._config.loader import ConfigLoader
-from viat._vault_config import ViatVaultStaticConfig
+from viat._vault.config import ViatVaultStaticConfig
+from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatConfigError
 from viat.protocols import ViatAttributeStorage
 from viat.providers.storage import (
@@ -8,7 +9,6 @@ from viat.providers.storage import (
     TomlAttributeStorage,
     TomlAttributeStorageConfig,
 )
-from viat.support.path_resolver import ViatPathResolver
 
 
 def load_storage_from_config(resolver: ViatPathResolver, static_config: ViatVaultStaticConfig, loader: ConfigLoader) -> ViatAttributeStorage:

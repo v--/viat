@@ -2,12 +2,12 @@ from collections.abc import Sequence
 from typing import cast
 
 from viat._config.loader import ConfigLoader
-from viat._vault_config import ViatVaultStaticConfig
+from viat._vault.config import ViatVaultStaticConfig
+from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatConfigError
 from viat.protocols import ViatFileTracker
 from viat.providers.tracker import GitFileTracker, GitFileTrackerConfig, GlobFileTracker, GlobFileTrackerConfig
 from viat.support.json import JsonArray
-from viat.support.path_resolver import ViatPathResolver
 
 
 def load_tracker_from_config(resolver: ViatPathResolver, static_config: ViatVaultStaticConfig, loader: ConfigLoader) -> ViatFileTracker:  # noqa: ARG001

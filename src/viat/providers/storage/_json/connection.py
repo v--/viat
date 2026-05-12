@@ -15,7 +15,6 @@ from viat.exceptions import (
 )
 from viat.protocols import ViatAttributeStorageConnection
 from viat.support.json import Json, MutableJsonObject
-from viat.support.stdlib_protocols import MutableMappingProtocol
 
 from .mutator import JsonAttributeMutator
 from .reader import JsonAttributeReader

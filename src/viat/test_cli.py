@@ -7,8 +7,7 @@ from click.testing import CliRunner
 
 from viat.cli import viat
 from viat.exceptions import ViatAttributeStorageError
-from viat.support.path_resolver import ViatPathResolver
-from viat.vault import ViatVault
+from viat.vault import ViatPathResolver, ViatVault
 
 
 @pytest.fixture
