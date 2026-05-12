@@ -1,77 +1,45 @@
-import json
-from types import TracebackType
+import pathlib
+import tomllib
 from typing import override
 
-import fastjsonschema
-import tomlkit
-import tomlkit.exceptions
+import tomli_w
 
 from viat.exceptions import ViatAttributeStorageError, ViatMalformedStoredDataError
-from viat.protocols import ViatAttributeStorage
+from viat.providers.storage.json import AbstractJsonAttributeStorage
+from viat.support.json import JsonObject, MutableJsonObject
 
 from .config import TomlAttributeStorageConfig
-from .connection import TomlAttributeStorageConnection
 
 
-class TomlAttributeStorage(ViatAttributeStorage):
+class TomlAttributeStorage(AbstractJsonAttributeStorage):
     """The TOML file storage class."""
 
     config: TomlAttributeStorageConfig
-    _active_conn: TomlAttributeStorageConnection | None
 
     def __init__(self, config: TomlAttributeStorageConfig) -> None:
         self.config = config
-        self._active_conn = None
 
     @override
-    def __enter__(self) -> TomlAttributeStorageConnection:
-        if self._active_conn:
-            raise ViatAttributeStorageError('This storage already has an active connection')
+    def get_json_schema_path(self) -> pathlib.Path | None:
+        return self.config.json_schema_path
 
+    @override
+    def load_storage_data(self) -> MutableJsonObject:
         try:
-            with open(self.config.storage_path) as file:
-                toml_doc = tomlkit.load(file)
+            with self.config.storage_path.open('rb') as file:
+                return tomllib.load(file)
         except FileNotFoundError:
-            toml_doc = tomlkit.TOMLDocument()
+            return {}
         except OSError as err:
             raise ViatAttributeStorageError('Could not read the storage file') from err
-        except tomlkit.exceptions.TOMLKitError as err:
+        except tomllib.TOMLDecodeError as err:
             raise ViatMalformedStoredDataError(self.config.storage_path) from err
 
-        if self.config.json_schema_path:
-            try:
-                with open(self.config.json_schema_path) as file:
-                    schema_content = json.load(file)
-                    validator = fastjsonschema.compile(schema_content)
-            except OSError as err:
-                raise ViatAttributeStorageError('Could not read the schema file') from err
-            except json.JSONDecodeError as err:
-                raise ViatAttributeStorageError('Could not decode the schema file') from err
-            except fastjsonschema.JsonSchemaDefinitionException as err:
-                raise ViatAttributeStorageError('Invalid schema file') from err
-        else:
-            validator = None
-
-        self._active_conn = TomlAttributeStorageConnection(toml_doc, validator)
-        return self._active_conn
-
     @override
-    def __exit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
-     ) -> None:
-        if not self._active_conn:
-            raise ViatAttributeStorageError('This storage has no active connection')
-
-        if exc_value or not self._active_conn.has_mutations:
-            self._active_conn = None
-            return
-
+    def dump_storage_data(self, data: JsonObject) -> None:
         try:
-            toml_string = tomlkit.dumps(self._active_conn.payload)
-        except json.JSONDecodeError as err:
+            toml_string = tomli_w.dumps(data)
+        except (ValueError, TypeError) as err:
             raise ViatAttributeStorageError('Could not serialize the stored attribute contents') from err
         finally:
             self._active_conn = None

@@ -53,7 +53,10 @@ class TestTomlStorage:
 
         assert storage_path.read_text() == expected_contents
 
-    def test_inline_comment_preservation(self, temp_directory: pathlib.Path) -> None:
+    # The initial version of this tool used tomlkit, which has the ability to preserve comments.
+    # Unfortunately, it was very slow, and so we replaced it with tomllib + tomli_w.
+    # This test just confirms that TOML comments get removed, as a way to highlight that this is expected.
+    def test_inline_comment_removal(self, temp_directory: pathlib.Path) -> None:
         storage_path = temp_directory.joinpath('storage.toml')
         initial_contents = dedent("""\
             [table]
@@ -69,7 +72,7 @@ class TestTomlStorage:
 
         expected_contents = dedent("""\
             [table]
-            key = "new_value"  # Comment
+            key = "new_value"
             """,
         )
 

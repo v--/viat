@@ -1,9 +1,7 @@
 import json
 import pathlib
+import tomllib
 from typing import overload
-
-import tomlkit
-import tomlkit.exceptions
 
 from viat.exceptions import ViatConfigError
 from viat.support.json import Json, JsonObject
@@ -15,22 +13,22 @@ class ConfigLoader:
     @staticmethod
     def try_load_toml_file(file_path: pathlib.Path) -> 'ConfigLoader | None':
         try:
-            with file_path.open() as file:
-                toml_doc = tomlkit.load(file)
+            with file_path.open('rb') as file:
+                contents = tomllib.load(file)
         except FileNotFoundError:
             return None
         except OSError as err:
             raise ViatConfigError('Could not read config file') from err
-        except tomlkit.exceptions.TOMLKitError as err:
+        except tomllib.TOMLDecodeError as err:
             raise ViatConfigError('Invalid TOML config file') from err
 
-        return ConfigLoader(toml_doc.unwrap())
+        return ConfigLoader(contents)
 
     @staticmethod
     def try_load_json_file(file_path: pathlib.Path) -> 'ConfigLoader | None':
         try:
             with file_path.open() as file:
-                json_value = json.load(file)
+                contents = json.load(file)
         except FileNotFoundError:
             return None
         except OSError as err:
@@ -38,10 +36,10 @@ class ConfigLoader:
         except json.decoder.JSONDecodeError as err:
             raise ViatConfigError('Invalid JSON config file') from err
 
-        if not isinstance(json_value, JsonObject):
+        if not isinstance(contents, JsonObject):
             raise ViatConfigError('The configuration must be a JSON object')
 
-        return ConfigLoader(json_value)
+        return ConfigLoader(contents)
 
     def __init__(self, payload: JsonObject) -> None:
         self.payload = payload

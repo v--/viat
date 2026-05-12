@@ -23,7 +23,7 @@ from .reader import JsonAttributeReader
 
 @dataclass
 class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
-    """A connection class for the TOML storage.
+    """A connection class for the JSON and TOML storages.
 
     Args:
         payload: The initial state of the storage.
@@ -35,7 +35,7 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
     has_mutations: bool
     _locked: MutableSet[pathlib.Path]
 
-    def __init__(self, payload: MutableMappingProtocol[str, Json], validator: Callable[[Json], None] | None) -> None:
+    def __init__(self, payload: MutableJsonObject, validator: Callable[[Json], None] | None) -> None:
         self.payload = payload
         self.validator = validator
         self.has_mutations = False
