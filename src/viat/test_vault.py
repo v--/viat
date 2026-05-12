@@ -6,7 +6,7 @@ import pytest
 from viat.exceptions import ViatConfigError, ViatVaultError
 from viat.support.path_resolver import VIAT_SUBDIR, ViatPathResolver
 
-from .vault import ViatVault
+from .vault import ViatVault, locate_existing_vault_root
 
 
 class TestVaultInitialize:
@@ -25,26 +25,6 @@ class TestVaultInitialize:
 
         with pytest.raises(ViatVaultError):
             ViatVault.initialize(temp_directory)
-
-
-class TestVaultLocate:
-    def test_success(self, temp_directory: pathlib.Path) -> None:
-        ViatVault.initialize(temp_directory)
-
-        subdir = temp_directory / 'a' / 'b'
-        subdir.mkdir(parents=True)
-
-        located = ViatVault.locate(subdir)
-        assert located.resolver.get_root() == temp_directory
-
-    def test_success_inside_viat_dir(self, temp_directory: pathlib.Path) -> None:
-        initial_vault = ViatVault.initialize(temp_directory)
-        located = ViatVault.locate(initial_vault.resolver.get_viat())
-        assert located.resolver.get_root() == temp_directory
-
-    def test_invalid(self, temp_directory: pathlib.Path) -> None:
-        with pytest.raises(ViatVaultError):
-            ViatVault.locate(temp_directory)
 
 
 class TestVault:
@@ -67,6 +47,26 @@ class TestVault:
 
         with pytest.raises(ViatVaultError):
             ViatVault(temp_directory)
+
+
+class TestLocateExistingVaultRoot:
+    def test_success(self, temp_directory: pathlib.Path) -> None:
+        ViatVault.initialize(temp_directory)
+
+        subdir = temp_directory / 'a' / 'b'
+        subdir.mkdir(parents=True)
+
+        located_root = locate_existing_vault_root(subdir)
+        assert located_root == temp_directory
+
+    def test_success_inside_viat_dir(self, temp_directory: pathlib.Path) -> None:
+        initial_vault = ViatVault.initialize(temp_directory)
+        located_root = locate_existing_vault_root(initial_vault.resolver.get_viat())
+        assert located_root == temp_directory
+
+    def test_invalid(self, temp_directory: pathlib.Path) -> None:
+        with pytest.raises(ViatVaultError):
+            locate_existing_vault_root(temp_directory)
 
 
 class TestVaultConfig:
