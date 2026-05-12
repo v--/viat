@@ -19,5 +19,9 @@ def tracked(output_json: bool, no_data: bool) -> None:
 
         print_paths(paths, output_json=output_json)
     else:
+        # Open the context manager just to validate the schema
+        with vault.storage:
+            pass
+
         print_paths(vault.tracker.iter_paths(), output_json=output_json)
 
