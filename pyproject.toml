@@ -12,6 +12,7 @@ classifiers = [
   "Topic :: Utilities",
 ]
 dependencies = [
+  "click (>=2.21)",
   "fastjsonschema (>=2.21)",
   "tomlkit (>=0.13)",
   "wcmatch (>=10)",
@@ -21,9 +22,6 @@ dependencies = [
 git = [
   "pygit2 (>=1.19)",
 ]
-cli = [
-  "click (>=8.3)",
-]
 
 [project.urls]
 Repository = "https://github.com/v--/viat.git"
@@ -31,7 +29,7 @@ Changelog = "https://github.com/v--/viat/blob/master/CHANGELOG.md"
 Documentation = "https://viat.readthedocs.io/"
 
 [project.scripts]
-viat = "viat.cli:viat[cli]"
+viat = "viat.cli:viat"
 
 [dependency-groups]
 dev = [
@@ -42,7 +40,7 @@ dev = [
   "pytest (>=9.0.3)",
   "ruff (>=0.15)",
   "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15post7",
-  "viat[cli, git] (>=0.0.0)",
+  "viat[git] (>=0.0.0)",
   "zensical (>=0.0.31)",
 ]
 
