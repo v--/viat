@@ -16,3 +16,5 @@ puts the following into `storage.toml`:
 ["file.pdf"]
 attr = "value"
 ```
+
+Determining which files are tracked by Viat is done via [tracker providers](./api/providers/tracker/), while storing the attributes is done via [storage providers](./api/providers/storage/). Both protocols are very general and new providers can easily be added.

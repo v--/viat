@@ -19,6 +19,8 @@ puts the following into `storage.toml`:
 attr = "value"
 ```
 
+Determining which files are tracked by Viat is done via [tracker providers](https://viat.readthedocs.io/en/latest/api/providers/tracker/), while storing the attributes is done via [storage providers](https://viat.readthedocs.io/en/latest/api/providers/storage/). Both protocols are very general and new providers can easily be added.
+
 ## Table of contents
 
 * [Usage](#usage)
@@ -203,4 +205,4 @@ When managing lots of files, there comes a point when metadata needs to be attac
 
 * XMP ([extensible metadata platform](https://developer.adobe.com/xmp/docs/)) files are designed to be used by arbitrary tools and can be easily tracked using version control, but are cumbersome to manage.
 
-Perhaps I am missing some other approaches, but at this point it should be clear that there is no convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. At some point I decided to refine the script, and so viat was born.
+Perhaps I am missing some other approaches, but at this point it should be clear that there is no convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. At some point I decided to refine the script, and so Viat was born.
