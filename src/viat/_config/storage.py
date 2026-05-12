@@ -16,7 +16,7 @@ def load_storage_from_config(resolver: ViatPathResolver, loader: ConfigLoader) -
             return load_toml_storage_from_config(resolver, loader)
 
         case 'json':
-            return load_toml_storage_from_config(resolver, loader)
+            return load_json_storage_from_config(resolver, loader)
 
         case _:
             raise ViatConfigError('The storage.provider option must be either "toml" or "json"')
