@@ -5,17 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.10.0 - 2025-05-13
+
+### Additions
 
 * Implement a shell-escape command.
+
+### Fixes
+
+* Fix not being to select the JSON storage provider.
+
+### Changes
+
+* Replace TOMLKit with tomllib + tomli_w to improve performance.
+* Allow disabling validation.
 * Refactor the JSON type hints.
 * Allow the tracker and storage providers to normalize paths.
 * Reorganize the modules.
-* Replace TOMLKit with tomllib + tomli_w to improve performance.
-* Allow disabling validation.
-* Fix not being to select the JSON storage provider.
-* Remove short option for tracked --no-data.
 * Move error stringification into the error hierarchy.
+
+### Removals
+
+* Remove short option for tracked --no-data.
 
 ## 0.9.6 - 2026-05-12
 

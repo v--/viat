@@ -835,7 +835,7 @@ wheels = [
 
 [[package]]
 name = "viat"
-version = "0.9.6.post1"
+version = "0.10.0"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
