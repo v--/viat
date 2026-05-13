@@ -1,4 +1,5 @@
 """The glob [`ViatFileTracker`][viat.protocols.ViatFileTracker] provider."""
+
 import pathlib
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
@@ -8,8 +9,9 @@ from wcmatch import glob
 
 from viat._vault.config import ViatVaultStaticConfig
 from viat._vault.resolver import ViatPathResolver
-from viat.exceptions import ViatConfigError, ViatUntrackedFileWarning, emit_warning
+from viat.exceptions import ViatConfigError
 from viat.protocols import ViatFileTracker
+from viat.providers.tracker._base_mixin import TrackerBaseMixin
 
 
 def validate_wcmatch_flags(flags: str) -> None:
@@ -49,7 +51,7 @@ class GlobFileTrackerConfig:
         validate_wcmatch_flags(self.flags)
 
 
-class GlobFileTracker(ViatFileTracker):
+class GlobFileTracker(TrackerBaseMixin, ViatFileTracker):
     """The default glob file tracker.
 
     Due to inconsistencies between [glob][] and [fnmatch][] from the standard library,
@@ -90,20 +92,7 @@ class GlobFileTracker(ViatFileTracker):
         for raw_path in glob.glob(self.config.patterns, root_dir=self.config.root, flags=self._glob_flags()):
             yield pathlib.Path(raw_path)
 
-    def _resolve_path(self, path: pathlib.Path | str) -> pathlib.Path:
-        return self.resolver.relativize(path) if self.resolver else pathlib.Path(path)
-
     @override
     def is_tracked(self, path: pathlib.Path | str) -> bool:
         rel_path = self._resolve_path(path)
         return glob.globmatch(rel_path, self.config.patterns, root_dir=self.config.root, flags=self._glob_flags() | glob.REALPATH)
-
-    @override
-    def validate_tracked(self, path: pathlib.Path | str) -> None:
-        if self.static_config.skip_validation:
-            return
-
-        rel_path = self._resolve_path(path)
-
-        if not self.is_tracked(rel_path):
-            emit_warning(ViatUntrackedFileWarning(rel_path), stacklevel=2)

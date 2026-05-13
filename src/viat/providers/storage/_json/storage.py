@@ -1,9 +1,6 @@
 import json
 import pathlib
-from types import TracebackType
 from typing import override
-
-import fastjsonschema
 
 from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatAttributeStorageError, ViatMalformedStoredDataError
@@ -11,72 +8,10 @@ from viat.protocols import ViatAttributeStorage
 from viat.support.json import JsonObject, MutableJsonObject
 
 from .config import JsonAttributeStorageConfig
-from .connection import JsonAttributeStorageConnection
+from .storage_mixin import JsonAttributeStorageMixin
 
 
-class AbstractJsonAttributeStorage(ViatAttributeStorage):
-    """An abstract implementation of JSON-based attribute storage. Used for JSON and TOML."""
-
-    _active_conn: JsonAttributeStorageConnection | None = None
-
-    def get_json_schema_path(self) -> pathlib.Path | None:
-        """Get the path to an optional JSON schema file."""
-        raise NotImplementedError
-
-    def get_resolver(self) -> ViatPathResolver | None:
-        """Get a path resolver for the connection."""
-        raise NotImplementedError
-
-    def load_storage_data(self) -> MutableJsonObject:
-        """Load the stored data as a mutable JSON object."""
-        raise NotImplementedError
-
-    def dump_storage_data(self, data: JsonObject) -> None:
-        """Dump a JSON object to the storage backend."""
-        raise NotImplementedError
-
-    @override
-    def __enter__(self) -> JsonAttributeStorageConnection:
-        if self._active_conn:
-            raise ViatAttributeStorageError('This storage already has an active connection')
-
-        storage_payload = self.load_storage_data()
-
-        if json_schema_path := self.get_json_schema_path():
-            try:
-                with json_schema_path.open() as file:
-                    schema_content = json.load(file)
-                    validator = fastjsonschema.compile(schema_content)
-            except OSError as err:
-                raise ViatAttributeStorageError('Could not read the schema file') from err
-            except json.JSONDecodeError as err:
-                raise ViatAttributeStorageError('Could not decode the schema file') from err
-            except fastjsonschema.JsonSchemaDefinitionException as err:
-                raise ViatAttributeStorageError('Invalid schema file') from err
-        else:
-            validator = None
-
-        self._active_conn = JsonAttributeStorageConnection(storage_payload, self.get_resolver(), validator)
-        return self._active_conn
-
-    @override
-    def __exit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
-     ) -> None:
-        if not self._active_conn:
-            raise ViatAttributeStorageError('This storage has no active connection')
-
-        if exc_value or not self._active_conn.has_mutations:
-            self._active_conn = None
-            return
-
-        self.dump_storage_data(self._active_conn.payload)
-
-
-class JsonAttributeStorage(AbstractJsonAttributeStorage):
+class JsonAttributeStorage(JsonAttributeStorageMixin, ViatAttributeStorage):
     """The JSON file storage class.
 
     Args:
@@ -99,15 +34,11 @@ class JsonAttributeStorage(AbstractJsonAttributeStorage):
         self.resolver = resolver
 
     @override
-    def get_json_schema_path(self) -> pathlib.Path | None:
+    def _get_json_schema_path(self) -> pathlib.Path | None:
         return self.config.json_schema_path
 
     @override
-    def get_resolver(self) -> ViatPathResolver | None:
-        return self.resolver
-
-    @override
-    def load_storage_data(self) -> MutableJsonObject:
+    def _load_storage_data(self) -> MutableJsonObject:
         try:
             with self.config.storage_path.open() as file:
                 return json.load(file)
@@ -119,7 +50,7 @@ class JsonAttributeStorage(AbstractJsonAttributeStorage):
             raise ViatMalformedStoredDataError(self.config.storage_path) from err
 
     @override
-    def dump_storage_data(self, data: JsonObject) -> None:
+    def _dump_storage_data(self, data: JsonObject) -> None:
         try:
             json_string = json.dumps(data, indent=self.config.indent)
         except json.JSONDecodeError as err:

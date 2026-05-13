@@ -1,7 +1,6 @@
 """The JSON [`ViatAttributeStorage`][viat.protocols.ViatAttributeStorage] provider."""
 
 from ._json import (
-    AbstractJsonAttributeStorage,
     JsonAttributeMutator,
     JsonAttributeReader,
     JsonAttributeStorage,
@@ -11,7 +10,6 @@ from ._json import (
 
 
 __all__ = [
-    'AbstractJsonAttributeStorage',
     'JsonAttributeMutator',
     'JsonAttributeReader',
     'JsonAttributeStorage',

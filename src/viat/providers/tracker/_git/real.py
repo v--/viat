@@ -1,4 +1,5 @@
 """Tools for tracking which files are known to viat."""
+
 import pathlib
 from collections.abc import Iterable
 from typing import override
@@ -7,13 +8,14 @@ import pygit2
 
 from viat._vault.config import ViatVaultStaticConfig
 from viat._vault.resolver import ViatPathResolver
-from viat.exceptions import ViatFileTrackerError, ViatUntrackedFileWarning, emit_warning
+from viat.exceptions import ViatFileTrackerError
 from viat.protocols import ViatFileTracker
+from viat.providers.tracker._base_mixin import TrackerBaseMixin
 
 from .config import GitFileTrackerConfig
 
 
-class GitFileTracker(ViatFileTracker):
+class GitFileTracker(TrackerBaseMixin, ViatFileTracker):
     """The git file tracker.
 
     Args:
@@ -74,9 +76,6 @@ class GitFileTracker(ViatFileTracker):
 
         yield from self._recurse_into_tree(ref.tree, self.config.repo_root)
 
-    def _resolve_path(self, path: pathlib.Path | str) -> pathlib.Path:
-        return self.resolver.relativize(path) if self.resolver else pathlib.Path(path)
-
     @override
     def is_tracked(self, path: pathlib.Path | str) -> bool:
         rel_path = self._resolve_path(path)
@@ -87,13 +86,3 @@ class GitFileTracker(ViatFileTracker):
             return False
 
         return True
-
-    @override
-    def validate_tracked(self, path: pathlib.Path | str) -> None:
-        if self.static_config.skip_validation:
-            return
-
-        rel_path = self._resolve_path(path)
-
-        if not self.is_tracked(rel_path):
-            emit_warning(ViatUntrackedFileWarning(rel_path), stacklevel=2)
