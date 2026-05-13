@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+* Implement a shell-escape command.
 * Refactor the JSON type hints.
 * Allow the tracker and storage providers to normalize paths.
 * Reorganize the modules.

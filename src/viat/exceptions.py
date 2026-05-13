@@ -5,7 +5,6 @@ import contextlib
 import pathlib
 import warnings
 from collections.abc import Callable, Generator, MutableSequence
-from typing import override
 
 
 class ViatException(Exception):
@@ -15,6 +14,22 @@ class ViatException(Exception):
         """Get a human readable string suitable for e.g. logging."""
         if isinstance(self.__cause__, ViatException):
             return f'{self}. {self.__cause__}.'
+
+        return f'{self}.'
+
+
+class ValidationExceptionMixin(Exception):  # noqa: N818
+    """Mixin for exceptions related to validation."""
+    __cause__: BaseException | None
+
+    def get_human_readable_string(self) -> str:
+        """Print the reason for which a validation has failed.
+
+        This is usually not a [`ViatException`](..ViatException) subclass,
+        so the default implementation would ignore the cause.
+        """
+        if self.__cause__:
+            return f'{self}: {self.__cause__}.'
 
         return f'{self}.'
 
@@ -43,7 +58,7 @@ class ViatAttributeStorageError(ViatError):
     """Generic error class for storage-related issues."""
 
 
-class ViatMalformedDataError(ViatAttributeStorageError):
+class ViatMalformedStoredDataError(ValidationExceptionMixin, ViatAttributeStorageError):
     """Error class for malformed data."""
 
     def get_path(self) -> pathlib.Path:
@@ -53,19 +68,8 @@ class ViatMalformedDataError(ViatAttributeStorageError):
     def __str__(self) -> str:
         return f'Malformed data stored for {self.get_path().as_posix()!r}'
 
-    @override
-    def get_human_readable_string(self) -> str:
-        if self.__cause__:
-            return f'{self}: {self.__cause__}.'
 
-        return f'{self}.'
-
-
-class ViatMalformedStoredDataError(ViatMalformedDataError):
-    """Error class for malformed data already stored."""
-
-
-class ViatValidationError(ViatAttributeStorageError):
+class ViatValidationError(ValidationExceptionMixin, ViatAttributeStorageError):
     """Error class for schema validation failure.
 
     Args:
@@ -81,13 +85,6 @@ class ViatValidationError(ViatAttributeStorageError):
 
     def __str__(self) -> str:
         return f'Validation error for {self.get_path().as_posix()!r}'
-
-    @override
-    def get_human_readable_string(self) -> str:
-        if self.__cause__:
-            return f'{self}: {self.__cause__}.'
-
-        return f'{self}.'
 
 
 class ViatMissingAttributeError(ViatAttributeStorageError, KeyError):
@@ -113,6 +110,10 @@ class ViatMissingAttributeError(ViatAttributeStorageError, KeyError):
         return f'Attribute {self.get_attr()!r} has not been set for {self.get_path().as_posix()!r}'
 
 
+class ViatCliError(ViatError):
+    """Error class for the command-line interface."""
+
+
 class ViatWarning(ViatException, Warning):
     """Generic warnings class."""
 
@@ -132,7 +133,7 @@ class ViatUntrackedFileWarning(ViatAttributeStorageWarning):
         return f'File {self.get_path().as_posix()!r} is not being tracked'
 
 
-class ViatStoredDataValidationWarning(ViatAttributeStorageWarning):
+class ViatStoredDataValidationWarning(ValidationExceptionMixin, ViatAttributeStorageWarning):
     """Warning class for stored data that does not pass validation.
 
     Args:
@@ -149,13 +150,6 @@ class ViatStoredDataValidationWarning(ViatAttributeStorageWarning):
 
     def __str__(self) -> str:
         return f'Validation error in stored data for {self.get_path().as_posix()!r}'
-
-    @override
-    def get_human_readable_string(self) -> str:
-        if self.__cause__:
-            return f'{self}: {self.__cause__}.'
-
-        return f'{self}.'
 
 
 _warning_handlers: MutableSequence[Callable[[ViatWarning, int], bool | None]] = []

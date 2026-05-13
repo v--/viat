@@ -209,3 +209,12 @@ class TestTomlStorage:
 
         actual_mod_time = storage_path.stat().st_mtime
         assert actual_mod_time == expected_mod_time
+
+    def test_update_with_null(self, temp_directory: pathlib.Path) -> None:
+        storage_path = temp_directory.joinpath('storage.toml')
+        storage_path.touch()
+        storage = TomlAttributeStorage(TomlAttributeStorageConfig(storage_path))
+
+        with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+            with storage as conn, conn.get_mutator('table') as mut:
+                mut['key'] = None

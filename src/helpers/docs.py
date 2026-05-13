@@ -61,6 +61,7 @@ def build_man_page() -> None:
         )
 
         man_tutorial = re.sub('```\\w+', '.IP', extracted_readme_usage) \
+            .replace('#### ', '\\fB') \
             .replace('```', '\n.P\n') \
             .replace('`', '"') \
             .replace('\n\n', '\n.P\n') \
@@ -74,9 +75,13 @@ def build_man_page() -> None:
 def build_usage_md() -> None:
     extracted_usage = extract_usage_from_readme(only_cli=False)
 
+    adapted_usage = extracted_usage \
+        .replace('### ', '## ') \
+        .replace('#### ', '### ')
+
     with open('docs/usage.md', 'w') as file:
         file.write('# Usage\n\n')
-        file.write(extracted_usage.replace('### ', '## '))
+        file.write(adapted_usage)
 
 
 def build_man_md() -> None:

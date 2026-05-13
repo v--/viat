@@ -5,6 +5,7 @@ from . import (
     mv,
     rm,
     set,  # noqa: A004
+    shell_export,
     stale,
     tracked,
     update,

@@ -6,7 +6,7 @@ import click
 
 from viat._cli.group import viat
 from viat._cli.output import print_json_value
-from viat.exceptions import ViatMalformedDataError
+from viat.exceptions import ViatCliError
 from viat.vault import autoload_vault
 
 
@@ -33,7 +33,7 @@ def set_(ctx: click.Context, path: pathlib.Path, attr: str, value: str, raw: boo
         try:
             parsed_value = json.loads(value)
         except json.JSONDecodeError as err:
-            raise ViatMalformedDataError(f'Malformed JSON string {value!r}') from err
+            raise ViatCliError(f'Malformed JSON string {value!r}') from err
 
     vault = autoload_vault(ctx.obj.vault_config)
     vault.tracker.validate_tracked(path)

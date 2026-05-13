@@ -72,6 +72,39 @@ $ viat set --raw tractatus.pdf publisher 'Annalen der Naturphilosophie'
 ...
 ```
 
+#### Scripting
+
+Tracking is useful for ensuring consistency with the file system, but also for shell scripting. For example, the following command produces a table of variables:
+
+```shell
+$ viat shell-export
+path=tractatus.pdf publisher='Annalen der Naturphilosophie' rating=4 author='Ludwig Wittgenstein' year=1921
+```
+
+This can be utilized in bash as follows:
+
+```bash
+viat shell-export | while read line; do
+    eval "export $line"
+    # The attributes are now exported as variables
+    export possibly_missing= # Cleanup
+done
+```
+
+Note the cleanup at the end. It is necessary to avoid reusing optional attributes exported in the previous loop iteration.
+
+In fish shell this is even simpler:
+
+```fish
+for line in (viat shell-export)
+    eval "export $line"
+    # The attributes are now exported as variables
+    export possibly_missing= # Cleanup
+end
+```
+
+#### Schemas
+
 It makes sense to utilize JSON schemas. Let us add the following to `.viat/schema.json`:
 
 ```json
@@ -107,6 +140,8 @@ $ viat get tractatus.pdf rating
 Warning: Validation error in stored data for 'tractatus.pdf': data.year must be number.
 4
 ```
+
+#### (Re)moving files
 
 If we move `tractatus.pdf` to `book.pdf`, viat will no longer know about it:
 
@@ -193,7 +228,7 @@ uv run poe docs-build
 ```
 
 > [!TIP]
-> An [AUR package](https://aur.archlinux.org/packages/viat) is available for reference, as well as a [GitHub Action](./.github/workflows/test.yaml). If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=viat).
+> An [AUR package](https://aur.archlinux.org/packages/viat) is available for reference, as well as a [GitHub Action](.github/workflows/test.yml). If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=viat).
 
 ## Motivation
 
