@@ -1,77 +1,74 @@
-"""Python type hints for JSON values."""
+"""Python type hints for JSON values.
 
+These initially used a protocol re-implementation of some stdlib collection ABCs (see [1]).
+Unfortunately, after going through several compatibility problems with both the corresponding
+ABCs and with actual collections, we decided to split the type hints from the classes used for
+instance checks.
+
+* Runtime type checking must be done via `isinstance(value, JsonArray)`.
+  Using `value: JsonArray` would not allow lists to be assigned (see [2]).
+
+* Static type checking must be done via the annotation `value: JsonArrayT`.
+  Using `isinstance(value, JsonArrayT)` produces a `TypeError` (see [3]).
+
+Note that `isinstance(value, JsonArray)` cannot be mimicked using `isinstance(value, Sequence)`
+because the latter also matches strings.
+
+Mutable JSON objects introduce additional complications because of the (in)variance of
+the type parameters of MutableMapping, so we abandoned them entirely.
+
+We hope that, at some point, Python's type ecosystem is flexible enough to support JSON hints.
+
+[1]: https://github.com/v--/viat/blob/c479d52e662dfeea56913479761532e81813e21f/src/viat/support/collection_protocols.py
+[2]: https://github.com/python/mypy/issues/2922
+[3]: https://discuss.python.org/t/runtime-type-checking-using-parameterized-types/70173
+"""
+
+import abc
 from collections.abc import Mapping, Sequence
-from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 
-if TYPE_CHECKING:
-    from viat.support.collection_protocols import (
-        MappingProtocol,
-        MutableMappingProtocol,
-        MutableSequenceProtocol,
-        SequenceProtocol,
-    )
-
-
-type AtomicJson = bool | float | str | None
+type AtomicJsonT = bool | float | str | None
 """Type union of atomic JSON types."""
 
 
-if TYPE_CHECKING:
-    @runtime_checkable
-    class JsonArray(SequenceProtocol[Any, 'Json'], Protocol):
-        """Protocol for immutable JSON arrays.
+type JsonArrayT = Sequence['JsonT']
+"""A type hint for immutable JSON arrays.
 
-        The protocol mimics `Sequence[Json]` during type checking.
-        At runtime, `JsonArray` is simply an alias for
-        [`Sequence`][collections.abc.Sequence].
-        """
-else:
-    JsonArray = Sequence
+This is intended to be used for type hints. For instance checks,
+consider using [`JsonArray`][..JsonArray] instead.
+"""
 
 
-if TYPE_CHECKING:
-    @runtime_checkable
-    class JsonObject(MappingProtocol[str, 'Json'], Protocol):
-        """Protocol for immutable JSON objects.
+class JsonArray(Sequence['JsonT'], abc.ABC):
+    """An ABC for immutable JSON arrays.
 
-        The protocol mimics `Mapping[str, Json]` during type checking.
-        At runtime, `JsonArray` is simply an alias for
-        [`Mapping`][collections.abc.Mapping].
-        """
-else:
-    JsonObject = Mapping
+    This is intended to be used for instance checks. For type hints,
+    consider using [`JsonArrayT`][..JsonArrayT] instead.
+    """
 
 
-type Json = AtomicJson | JsonArray | JsonObject
+JsonArray.register(list)
+
+
+type JsonObjectT = Mapping[str, 'JsonT']
+"""A type hint for immutable JSON objects.
+
+This is intended to be used for type hints. For instance checks,
+consider using [`JsonObject`][..JsonObject] instead.
+"""
+
+
+class JsonObject(Mapping[str, 'JsonT'], abc.ABC):
+    """An ABC for immutable JSON objects.
+
+    This is intended to be used for instance checks. For type hints,
+    consider using [`JsonObjectT`][..JsonObjectT] instead.
+    """
+
+
+JsonObject.register(dict)
+
+
+type JsonT = AtomicJsonT | JsonArrayT | JsonObjectT
 """Type alias for immutable JSON values."""
-
-
-if TYPE_CHECKING:
-    @runtime_checkable
-    class MutableJsonArray(MutableSequenceProtocol[Any, 'MutableJson'], Protocol):
-        """Protocol for mutable JSON arrays.
-
-        The protocol mimics `MuableSequence[Json]` during type checking.
-        At runtime, `MutableJsonArray` is simply an alias for
-        [`MutableSequence`][collections.abc.MutableSequence].
-        """
-else:
-    MutableJsonArray = Sequence
-
-
-if TYPE_CHECKING:
-    @runtime_checkable
-    class MutableJsonObject(MutableMappingProtocol[str, 'MutableJson'], Protocol):
-        """Protocol for mutable JSON objects.
-
-        The protocol mimics `MutableMapping[str, Json]` during type checking.
-        At runtime, `MutableJsonArray` is simply an alias for
-        [`MutableMapping`][collections.abc.MutableMapping].
-        """
-else:
-    MutableJsonObject = Mapping
-
-
-type MutableJson = AtomicJson | JsonArray | MutableJsonArray | JsonObject | MutableJsonObject
-"""Type alias for mutable JSON values."""

@@ -6,7 +6,7 @@ from collections.abc import Generator, Iterable
 import click
 
 from viat.exceptions import ViatError, ViatWarning
-from viat.support.json import Json
+from viat.support.json import JsonT
 
 
 @contextlib.contextmanager
@@ -23,7 +23,7 @@ def cli_warning_handler(warning: ViatWarning, stacklevel: int) -> bool:  # noqa:
     return True
 
 
-def print_json_value(value: Json, *, raw: bool = False) -> None:
+def print_json_value(value: JsonT, *, raw: bool = False) -> None:
     if raw and isinstance(value, str):
         click.echo(value)
     else:

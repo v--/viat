@@ -4,11 +4,11 @@ import tomllib
 from typing import overload
 
 from viat.exceptions import ViatConfigError
-from viat.support.json import Json, JsonObject
+from viat.support.json import JsonObject, JsonObjectT, JsonT
 
 
 class ConfigLoader:
-    payload: JsonObject
+    payload: JsonObjectT
 
     @staticmethod
     def try_load_toml_file(file_path: pathlib.Path) -> 'ConfigLoader | None':
@@ -41,11 +41,11 @@ class ConfigLoader:
 
         return ConfigLoader(contents)
 
-    def __init__(self, payload: JsonObject) -> None:
+    def __init__(self, payload: JsonObjectT) -> None:
         self.payload = payload
 
-    def get_nested(self, *segments: str) -> Json:
-        config = self.payload
+    def get_nested(self, *segments: str) -> JsonT:
+        config: JsonObjectT = self.payload
 
         if len(segments) == 0:
             return config

@@ -1,5 +1,6 @@
 import json
 import pathlib
+from collections.abc import MutableMapping
 from types import TracebackType
 from typing import override
 
@@ -9,7 +10,7 @@ from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatAttributeStorageError
 from viat.protocols import ViatAttributeStorage
 from viat.providers.storage._json.connection import JsonAttributeStorageConnection
-from viat.support.json import JsonObject, MutableJsonObject
+from viat.support.json import JsonObjectT, JsonT
 
 
 class JsonAttributeStorageMixin(ViatAttributeStorage):
@@ -19,10 +20,10 @@ class JsonAttributeStorageMixin(ViatAttributeStorage):
     def _get_json_schema_path(self) -> pathlib.Path | None:
         raise NotImplementedError
 
-    def _load_storage_data(self) -> MutableJsonObject:
+    def _load_storage_data(self) -> MutableMapping[str, JsonT]:
         raise NotImplementedError
 
-    def _dump_storage_data(self, data: JsonObject) -> None:
+    def _dump_storage_data(self, data: JsonObjectT) -> None:
         raise NotImplementedError
 
     @override

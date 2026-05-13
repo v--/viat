@@ -1,11 +1,12 @@
 import json
 import pathlib
+from collections.abc import MutableMapping
 from typing import override
 
 from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatAttributeStorageError, ViatMalformedStoredDataError
 from viat.protocols import ViatAttributeStorage
-from viat.support.json import JsonObject, MutableJsonObject
+from viat.support.json import JsonObjectT, JsonT
 
 from .config import JsonAttributeStorageConfig
 from .storage_mixin import JsonAttributeStorageMixin
@@ -38,7 +39,7 @@ class JsonAttributeStorage(JsonAttributeStorageMixin, ViatAttributeStorage):
         return self.config.json_schema_path
 
     @override
-    def _load_storage_data(self) -> MutableJsonObject:
+    def _load_storage_data(self) -> MutableMapping[str, JsonT]:
         try:
             with self.config.storage_path.open() as file:
                 return json.load(file)
@@ -50,7 +51,7 @@ class JsonAttributeStorage(JsonAttributeStorageMixin, ViatAttributeStorage):
             raise ViatMalformedStoredDataError(self.config.storage_path) from err
 
     @override
-    def _dump_storage_data(self, data: JsonObject) -> None:
+    def _dump_storage_data(self, data: JsonObjectT) -> None:
         try:
             json_string = json.dumps(data, indent=self.config.indent)
         except json.JSONDecodeError as err:

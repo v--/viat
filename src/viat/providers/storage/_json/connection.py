@@ -1,6 +1,6 @@
 import contextlib
 import pathlib
-from collections.abc import Callable, Generator, Iterable, MutableSet
+from collections.abc import Callable, Generator, Iterable, MutableMapping, MutableSet
 from dataclasses import dataclass
 from typing import override
 
@@ -15,7 +15,7 @@ from viat.exceptions import (
     emit_warning,
 )
 from viat.protocols import ViatAttributeStorageConnection
-from viat.support.json import Json, MutableJsonObject
+from viat.support.json import JsonObject, JsonObjectT, JsonT
 
 from .mutator import JsonAttributeMutator
 from .reader import JsonAttributeReader
@@ -31,10 +31,10 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
         validator: A validator to be used on the contents of the storage.
     """
 
-    payload: MutableJsonObject
+    payload: MutableMapping[str, JsonT]
     """The payload used to initialize the connection."""
 
-    validator: Callable[[Json], None] | None
+    validator: Callable[[JsonT], None] | None
     """The validator used to initialize the connection."""
 
     resolver: ViatPathResolver | None
@@ -47,9 +47,9 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
 
     def __init__(
         self,
-        payload: MutableJsonObject,
+        payload: MutableMapping[str, JsonT],
         resolver: ViatPathResolver | None = None,
-        validator: Callable[[Json], None] | None = None,
+        validator: Callable[[JsonT], None] | None = None,
     ) -> None:
         self.payload = payload
         self.resolver =resolver
@@ -59,7 +59,7 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
 
         if validator:
             for key, value in self.payload.items():
-                if not isinstance(value, MutableJsonObject):
+                if not isinstance(value, JsonObject):
                     raise ViatMalformedStoredDataError(pathlib.Path(key))
 
                 if self.validator:
@@ -83,10 +83,10 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
 
         stored_data = self.payload.get(rel_path.as_posix())
 
-        if stored_data is not None and not isinstance(stored_data, MutableJsonObject):
+        if stored_data is not None and not isinstance(stored_data, JsonObject):
             raise ViatMalformedStoredDataError(rel_path)
 
-        payload = stored_data or {}
+        payload: JsonObjectT = stored_data or {}
         self._locked.add(rel_path)
 
         try:
@@ -103,10 +103,10 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
 
         stored_data = self.payload.get(rel_path.as_posix())
 
-        if stored_data is not None and not isinstance(stored_data, MutableJsonObject):
+        if stored_data is not None and not isinstance(stored_data, MutableMapping):
             raise ViatMalformedStoredDataError(rel_path)
 
-        payload = stored_data or {}
+        payload: MutableMapping[str, JsonT] = stored_data or {}
         self._locked.add(rel_path)
         self.has_mutations = True
 

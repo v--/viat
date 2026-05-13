@@ -1,5 +1,6 @@
 import pathlib
 import tomllib
+from collections.abc import MutableMapping
 from typing import override
 
 import tomli_w
@@ -8,7 +9,7 @@ from viat import ViatAttributeStorage
 from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatAttributeStorageError, ViatMalformedStoredDataError
 from viat.providers.storage._json.storage_mixin import JsonAttributeStorageMixin
-from viat.support.json import JsonObject, MutableJsonObject
+from viat.support.json import JsonObjectT, JsonT
 
 from .config import TomlAttributeStorageConfig
 
@@ -40,7 +41,7 @@ class TomlAttributeStorage(JsonAttributeStorageMixin, ViatAttributeStorage):
         return self.config.json_schema_path
 
     @override
-    def _load_storage_data(self) -> MutableJsonObject:
+    def _load_storage_data(self) -> MutableMapping[str, JsonT]:
         try:
             with self.config.storage_path.open('rb') as file:
                 return tomllib.load(file)
@@ -52,7 +53,7 @@ class TomlAttributeStorage(JsonAttributeStorageMixin, ViatAttributeStorage):
             raise ViatMalformedStoredDataError(self.config.storage_path) from err
 
     @override
-    def _dump_storage_data(self, data: JsonObject) -> None:
+    def _dump_storage_data(self, data: JsonObjectT) -> None:
         try:
             toml_string = tomli_w.dumps(data)
         except (ValueError, TypeError) as err:

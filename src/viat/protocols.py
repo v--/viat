@@ -1,11 +1,10 @@
 """Protocols upon which viat is built."""
 import pathlib
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping, MutableMapping
 from contextlib import AbstractContextManager
 from typing import Protocol
 
-from viat.support.collection_protocols import MappingProtocol, MutableMappingProtocol
-from viat.support.json import Json
+from viat.support.json import JsonT
 
 
 class ViatFileTracker(Protocol):
@@ -37,12 +36,18 @@ class ViatFileTracker(Protocol):
         """  # noqa: D205
 
 
-class ViatAttributeReader(MappingProtocol[str, Json], Protocol):
-    """A scoped attribute reader for a storage entry."""
+class ViatAttributeReader(Mapping[str, JsonT]):
+    """A scoped attribute reader for a storage entry.
+
+    This is not a protocol because it inherits the Mapping ABC.
+    """
 
 
-class ViatAttributeMutator(MutableMappingProtocol[str, Json], Protocol):
-    """A scoped attribute mutator for a storage entry."""
+class ViatAttributeMutator(MutableMapping[str, JsonT]):
+    """A scoped attribute mutator for a storage entry.
+
+    This is not a protocol because it inherits the MutableMapping ABC.
+    """
 
 
 class ViatAttributeStorageConnection(Protocol):

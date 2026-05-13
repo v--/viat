@@ -3,10 +3,10 @@ from collections.abc import Iterator, Mapping
 
 from viat.exceptions import ViatMissingAttributeError
 from viat.protocols import ViatAttributeReader
-from viat.support.json import Json, JsonObject
+from viat.support.json import JsonObjectT, JsonT
 
 
-class JsonAttributeReader(Mapping[str, Json], ViatAttributeReader):
+class JsonAttributeReader(ViatAttributeReader, Mapping[str, JsonT]):
     """A storage reader for JSON objects.
 
     Args:
@@ -17,14 +17,14 @@ class JsonAttributeReader(Mapping[str, Json], ViatAttributeReader):
     path: pathlib.Path
     """The path used to initialize the reader."""
 
-    json_object: JsonObject
+    json_object: JsonObjectT
     """The object used to initialize the reader."""
 
-    def __init__(self, path: pathlib.Path, json_object: JsonObject) -> None:
+    def __init__(self, path: pathlib.Path, json_object: JsonObjectT) -> None:
         self.path = path
         self.json_object = json_object
 
-    def __getitem__(self, key: str) -> Json:
+    def __getitem__(self, key: str) -> JsonT:
         try:
             return self.json_object[key]
         except KeyError:

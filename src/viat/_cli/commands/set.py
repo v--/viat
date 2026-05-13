@@ -11,7 +11,7 @@ from viat.vault import autoload_vault
 
 
 if TYPE_CHECKING:
-    from viat.support.json import Json
+    from viat.support.json import JsonT
 
 
 @viat.command('set')
@@ -25,7 +25,7 @@ def set_(ctx: click.Context, path: pathlib.Path, attr: str, value: str, raw: boo
 
     Unless the --raw parameter is given, we treat the value as JSON.
     """
-    parsed_value: Json
+    parsed_value: JsonT
 
     if raw:
         parsed_value = value
