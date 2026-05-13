@@ -14,4 +14,3 @@ The entire documentation build process can be performed using
 ```shell
 uv run poe docs-build
 ```
-
