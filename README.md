@@ -87,11 +87,8 @@ This can be utilized in bash as follows:
 viat shell-export | while read line; do
     eval "export $line"
     # The attributes are now exported as variables
-    export possibly_missing= # Cleanup
 done
 ```
-
-Note the cleanup at the end. It is necessary to avoid reusing optional attributes exported in the previous loop iteration.
 
 In fish shell this is even simpler:
 
@@ -99,8 +96,15 @@ In fish shell this is even simpler:
 for line in (viat shell-export)
     eval "export $line"
     # The attributes are now exported as variables
-    export possibly_missing= # Cleanup
 end
+```
+
+If we add another file, `zarathustra.pdf`, and if the tracker lists it after `tractatus.pdf`, then Viat would try to reset the missing attributes to avoid reusing variables from the previous loop iteration:
+
+```shell
+$ viat shell-export
+path=tractatus.pdf publisher='Annalen der Naturphilosophie' rating=4 author='Ludwig Wittgenstein' year=1921
+path=zarathustra.pdf publisher= rating= author= year=
 ```
 
 #### Schemas

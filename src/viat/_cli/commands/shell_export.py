@@ -34,18 +34,26 @@ def shell_export(ctx: click.Context, path_var: str) -> None:
     if not is_valid_variable_name(path_var):
         raise ViatCliError(f'As a precaution, we disallow the string {path_var!r} as a variable.')
 
+    cumulative_exported = set[str]()
     vault = autoload_vault(ctx.obj.vault_config)
 
     with vault.storage as conn:
         for path in vault.tracker.iter_paths():
             click.echo(f'{path_var}={shlex.quote(path.as_posix())}', nl=False)
+            exported = set[str]()
 
             with conn.get_reader(path) as reader:
                 for key, value in reader.items():
                     if not is_valid_variable_name(key):
                         continue
 
+                    exported.add(key)
+                    cumulative_exported.add(key)
+
                     value_str = shlex.quote(value if isinstance(value, str) else json.dumps(value))
                     click.echo(f' {key}={value_str}', nl=False)
+
+            for key in cumulative_exported.difference(exported):
+                click.echo(f' {key}=', nl=False)
 
             click.echo('', nl=True)

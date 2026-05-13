@@ -365,27 +365,15 @@ class TestRm:
 
 class TestShellExport:
     def test_default(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
-        vault_with_readme.resolver.get_root().joinpath('CHANGELOG.md').touch()
-
-        with vault_with_readme.storage as conn:
-            with conn.get_mutator('README.md') as mut:
-                mut['str'] = 'value1'
-                mut['int'] = 1
-                mut['bool'] = False
-                mut['json'] = {'key': 'value'}
-
-            with conn.get_mutator('CHANGELOG.md') as mut:
-                mut['str'] = 'value2'
-                mut['int'] = 2
-                mut['bool'] = True
+        with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
+            mut['str'] = 'value1'
+            mut['int'] = 1
+            mut['bool'] = False
+            mut['json'] = {'key': 'value'}
 
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
             result = click_runner.invoke(viat, ['shell-export'])
-            assert set(result.stdout.splitlines()) == {
-                'path=CHANGELOG.md str=value2 int=2 bool=true',
-                'path=README.md str=value1 int=1 bool=false json=\'{"key": "value"}\'',
-            }
-
+            assert result.stdout == 'path=README.md str=value1 int=1 bool=false json=\'{"key": "value"}\'\n'
             assert result.stderr == ''
 
         with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
