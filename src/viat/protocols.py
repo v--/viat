@@ -1,11 +1,11 @@
 """Protocols upon which viat is built."""
-
 import pathlib
 from collections.abc import Iterable
+from contextlib import AbstractContextManager
 from typing import Protocol
 
+from viat.support.collection_protocols import MappingProtocol, MutableMappingProtocol
 from viat.support.json import Json
-from viat.support.stdlib_protocols import AbstractContextManagerProtocol, MappingProtocol, MutableMappingProtocol
 
 
 class ViatFileTracker(Protocol):
@@ -59,7 +59,7 @@ class ViatAttributeStorageConnection(Protocol):
         Once the context manager exits, the connection validates the update.
     """
 
-    def get_reader(self, path: pathlib.Path | str) -> AbstractContextManagerProtocol[ViatAttributeReader]:
+    def get_reader(self, path: pathlib.Path | str) -> AbstractContextManager[ViatAttributeReader]:
         """Create a context manager that produces an attribute reader.
 
         Args:
@@ -70,7 +70,7 @@ class ViatAttributeStorageConnection(Protocol):
         """
         ...
 
-    def get_mutator(self, path: pathlib.Path | str) -> AbstractContextManagerProtocol[ViatAttributeMutator]:
+    def get_mutator(self, path: pathlib.Path | str) -> AbstractContextManager[ViatAttributeMutator]:
         """Create a context manager that produces an attribute mutator.
 
         Upon exiting, the context manager must validate the state of the mutator.
@@ -91,7 +91,7 @@ class ViatAttributeStorageConnection(Protocol):
         """
 
 
-class ViatAttributeStorage(AbstractContextManagerProtocol[ViatAttributeStorageConnection], Protocol):
+class ViatAttributeStorage(AbstractContextManager[ViatAttributeStorageConnection], Protocol):
     """A storage for virtual attributes.
 
     It is only meant to be used indirectly as a context manager that emits a

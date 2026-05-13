@@ -1,4 +1,4 @@
-"""Protocols that mimic some of the stdlib collection and context manager ABCs.
+"""Protocols that mimic some of the stdlib collection ABCs.
 
 We only implement a few protocols for type checking of JSON. These protocols are
 not used at runtime (even the runtime_checkable decorator is there only for type
@@ -7,34 +7,18 @@ checking)
 It is not worthwhile for us to accurately reproduce the ABCs with all their base
 classes and dependencies, but the result is close enough.
 
-The annotations are based on [typing.pyi] and [contextlib.pyi] from the typeshed.
+The annotations are based on [typing.pyi] from the typeshed.
 
 [typing.pyi]: https://github.com/python/typeshed/blob/main/stdlib/typing.pyi
-[contextlib.pyi]: https://github.com/python/typeshed/blob/main/stdlib/contextlib.pyi
 """
 # ruff: noqa: D102, D105, PLW1641
 
-from collections.abc import ItemsView, Iterable, Iterator, KeysView, ValuesView
-from types import TracebackType
+from collections.abc import Collection, ItemsView, Iterable, Iterator, KeysView, Reversible, ValuesView
 from typing import Protocol, overload, runtime_checkable
 
 
 @runtime_checkable
-class CollectionProtocol[InT, OutT](Protocol):
-    """Protocol that mimics the [`Collection`][collections.abc.Collection] ABC.
-
-    Type Parameters:
-        InT: The (covariant) parameter type of the collection.
-        OutT: The (contravariant) result type of the collection.
-    """
-
-    def __iter__(self) -> Iterator[OutT]: ...
-    def __len__(self) -> int: ...
-    def __contains__(self, x: InT, /) -> bool: ...
-
-
-@runtime_checkable
-class SequenceProtocol[InT, OutT](CollectionProtocol[InT, OutT], Protocol):
+class SequenceProtocol[InT, OutT](Reversible[OutT], Collection[OutT], Protocol):
     """Protocol that mimics the [`Sequence`][collections.abc.Sequence] ABC.
 
     Type Parameters:
@@ -46,7 +30,7 @@ class SequenceProtocol[InT, OutT](CollectionProtocol[InT, OutT], Protocol):
     @overload
     def __getitem__(self, index: int, /) -> OutT: ...
     @overload
-    def __getitem__(self, index: 'slice[int | None]', /) -> Iterable[OutT]: ...
+    def __getitem__(self, index: 'slice[int | None]', /) -> 'SequenceProtocol[InT, OutT]': ...
 
     # Mixin methods
     def index(self, value: InT, start: int = 0, stop: int = ..., /) -> int: ...
@@ -70,7 +54,7 @@ class MutableSequenceProtocol[InT, OutT](SequenceProtocol[InT, OutT], Protocol):
     @overload
     def __getitem__(self, index: int, /) -> OutT: ...
     @overload
-    def __getitem__(self, index: 'slice[int | None]', /) -> Iterable[OutT]: ...
+    def __getitem__(self, index: 'slice[int | None]', /) -> 'MutableSequenceProtocol[InT, OutT]': ...
     @overload
     def __setitem__(self, index: int, value: InT, /) -> None: ...
     @overload
@@ -91,7 +75,7 @@ class MutableSequenceProtocol[InT, OutT](SequenceProtocol[InT, OutT], Protocol):
 
 
 @runtime_checkable
-class MappingProtocol[K, V](CollectionProtocol[K, K], Protocol):
+class MappingProtocol[K, V](Collection[K], Protocol):
     """Protocol that mimics the [`Mapping`][collections.abc.Mapping] ABC.
 
     Type Parameters:
@@ -148,15 +132,3 @@ class MutableMappingProtocol[K, V](MappingProtocol[K, V], Protocol):
     def update(self: MappingProtocol[str, V], m: Iterable[tuple[str, V]], /, **kwargs: V) -> None: ...
     @overload
     def update(self: MappingProtocol[str, V], /, **kwargs: V) -> None: ...
-
-
-@runtime_checkable
-class AbstractContextManagerProtocol[T](Protocol):
-    """Protocol that mimics the [`AbstractContextManager`][contextlib.AbstractContextManager] ABC.
-
-    Type Parameters:
-        T: The type of the context.
-    """
-
-    def __enter__(self) -> T: ...
-    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None, /) -> bool | None: ...

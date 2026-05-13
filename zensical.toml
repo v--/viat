@@ -22,7 +22,7 @@ nav = [
     ] },
     { "Support" = [
       { "JSON" = "api/support/json.md" },
-      { "stdlib protocols" = "api/support/stdlib_protocols.md" },
+      { "stdlib protocols" = "api/support/collection_protocols.md" },
     ] },
   ] },
 ]

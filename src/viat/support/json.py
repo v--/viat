@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 
 if TYPE_CHECKING:
-    from viat.support.stdlib_protocols import (
+    from viat.support.collection_protocols import (
         MappingProtocol,
         MutableMappingProtocol,
         MutableSequenceProtocol,
