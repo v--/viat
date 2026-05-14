@@ -4,6 +4,7 @@ import re
 import subprocess
 from inspect import cleandoc
 from textwrap import dedent
+from typing import cast
 
 import click
 from click_man.man import ManPage
@@ -60,8 +61,11 @@ def build_man_page() -> None:
             ),
         )
 
-        man_tutorial = re.sub('```\\w+', '.IP', extracted_readme_usage) \
-            .replace('#### ', '\\fB') \
+        man_tutorial = re.sub(
+                '```\\w+',
+                '.IP',
+                re.sub('#### (?P<title>.*)', lambda match: '\\fB' + cast('str', match.group('title').upper()), extracted_readme_usage),
+            ) \
             .replace('```', '\n.P\n') \
             .replace('`', '"') \
             .replace('\n\n', '\n.P\n') \
