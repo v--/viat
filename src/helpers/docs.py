@@ -77,7 +77,8 @@ def build_usage_md() -> None:
 
     adapted_usage = extracted_usage \
         .replace('### ', '## ') \
-        .replace('#### ', '### ')
+        .replace('#### ', '### ') \
+        .replace('refer to the [online documentation](https://viat.readthedocs.io/) or to the man page', 'refer to the man page')
 
     with open('docs/usage.md', 'w') as file:
         file.write('# Usage\n\n')

@@ -22,7 +22,7 @@ puts the following into `storage.toml`:
 attr = "value"
 ```
 
-Determining which files are tracked by Viat is done via [tracker providers](https://viat.readthedocs.io/en/latest/api/providers/tracker/), while storing the attributes is done via [storage providers](https://viat.readthedocs.io/en/latest/api/providers/storage/). Both protocols are very general and new providers can easily be added.
+Determining which files are tracked by Viat is done via [tracker providers](https://viat.readthedocs.io/en/stable/api/providers/tracker/), while storing the attributes is done via [storage providers](https://viat.readthedocs.io/en/stable/api/providers/storage/). Both protocols are very general and new providers can easily be added.
 
 ## Table of contents
 
@@ -34,7 +34,7 @@ See also the [documentation on ReadTheDocs](https://viat.readthedocs.io/)
 
 ## Usage
 
-We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page [`viat(1)`](https://viat.readthedocs.io/man) for more details.
+We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page [`viat(1)`](https://viat.readthedocs.io/en/stable/man/) for more details.
 
 ### Command-line usage
 
@@ -171,7 +171,7 @@ For such cases, we provide the helpers `viat mv` and `viat rm`, but otherwise av
 
 ### Programmatic usage
 
-The programmatic usage is straightforward enough because of the [API reference](https://viat.readthedocs.io/en/latest/api/protocols/). Here is a brief continuation of the above example:
+The programmatic usage is straightforward enough because of the [API reference](https://viat.readthedocs.io/en/stable/api/protocols/). Here is a brief continuation of the above example:
 
 ```python
 vault = autoload_vault()
