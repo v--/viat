@@ -52,7 +52,7 @@ def build_man_page() -> None:
 
         man_file.write(
             dedent("""\
-                .SH ENVIRONMENT\n
+                .SH ENVIRONMENT
                 .TP
                 \\fBVIAT_DIR\\fP
                 Use a concrete vault directory than searching through the current directory upwards.
