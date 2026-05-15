@@ -1,6 +1,6 @@
 [project]
 name = "viat"
-version = "0.10.1"
+version = "0.10.2"
 description = "A tool for managing virtual file attributes"
 readme = "README.md"
 requires-python = ">=3.12"
