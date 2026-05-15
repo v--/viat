@@ -2,7 +2,7 @@
 
 import pathlib
 from collections.abc import Iterable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import override
 
 from wcmatch import glob
@@ -14,11 +14,11 @@ from viat.protocols import ViatFileTracker
 from viat.providers.tracker._base_mixin import TrackerBaseMixin
 
 
-def validate_wcmatch_flags(flags: str) -> None:
+def validate_wcmatch_flags(flags: Sequence[str]) -> None:
     """Check the validity of wcmatch glob options.
 
     Args:
-        flags: A string whose characters correspond to glob options.
+        flags: A sequence of strings corresponding to glob options.
 
     Raises:
         viat.exceptions.ViatConfigError: If some flag is unrecognized.
@@ -26,6 +26,9 @@ def validate_wcmatch_flags(flags: str) -> None:
     for f in flags:
         if not hasattr(glob, f):
             raise ViatConfigError(f'Unrecognized wcmatch glob flag {f}')
+
+
+DEFAULT_GLOB_FLAGS = ['NEGATE', 'GLOBSTAR', 'BRACE']
 
 
 @dataclass
@@ -44,8 +47,8 @@ class GlobFileTrackerConfig:
     patterns: Sequence[str]
     """A sequence of wcmatch-flavored glob patterns."""
 
-    flags: str = 'NGB'  # GLOBSTAR (**), NEGATE (!), BRACE ({a,b})
-    """A string whose characters correspond to glob options."""
+    flags: Sequence[str] = field(default_factory=lambda: DEFAULT_GLOB_FLAGS)
+    """A sequence of strings corresponding to glob options."""
 
     def __post_init__(self) -> None:  # noqa: D105
         validate_wcmatch_flags(self.flags)

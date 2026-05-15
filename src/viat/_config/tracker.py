@@ -7,6 +7,7 @@ from viat._vault.resolver import ViatPathResolver
 from viat.exceptions import ViatConfigError
 from viat.protocols import ViatFileTracker
 from viat.providers.tracker import GitFileTracker, GitFileTrackerConfig, GlobFileTracker, GlobFileTrackerConfig
+from viat.providers.tracker.glob import DEFAULT_GLOB_FLAGS
 from viat.support.json import JsonArray
 
 
@@ -26,8 +27,7 @@ def load_glob_tracker_from_config(resolver: ViatPathResolver, static_config: Via
     tracker_config = GlobFileTrackerConfig(
         root=loader.get_path('tracker', 'glob', 'root', root=resolver.get_root(), default=resolver.get_root()),
         patterns=load_glob_tracker_patterns_from_config(loader),
-        # The tracker config initializer will validate the flags
-        flags=loader.get_str('tracker', 'glob', 'flags', default=GlobFileTrackerConfig.flags),
+        flags=load_glob_tracker_flags_from_config(loader),
     )
 
     return GlobFileTracker(tracker_config, resolver, static_config)
@@ -44,6 +44,23 @@ def load_glob_tracker_patterns_from_config(loader: ConfigLoader) -> Sequence[str
 
         case None:
             return []
+
+        case _:
+            raise ViatConfigError('The tracker.glob.patterns option must be an array of glob patterns')
+
+
+def load_glob_tracker_flags_from_config(loader: ConfigLoader) -> Sequence[str]:
+    match flags := loader.get_nested('tracker', 'glob', 'flags'):
+        case JsonArray():
+            for flag in flags:
+                # The actual flags will get validated when constructing the config
+                if not isinstance(flags, str):
+                    raise ViatConfigError(f'Invalid glob pattern {flag} in tracker.glob.flags')
+
+            return cast('Sequence[str]', flags)
+
+        case None:
+            return DEFAULT_GLOB_FLAGS
 
         case _:
             raise ViatConfigError('The tracker.glob.patterns option must be an array of glob patterns')

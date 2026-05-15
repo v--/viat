@@ -129,7 +129,7 @@ class TestVaultConfig:
         config_path.write_text(
             dedent("""\
                 [tracker.glob]
-                flags = "F"
+                flags = ["INVALID"]
                 """,
             ),
         )
