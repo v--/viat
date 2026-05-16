@@ -5,12 +5,22 @@ description = "A tool for managing virtual file attributes"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Unlicense"
+
 classifiers = [
   "Development Status :: 4 - Beta",
   "Environment :: Console",
   "Operating System :: OS Independent",
   "Topic :: Utilities",
+  # The rest of the classifiers will hopefully be populated dynamically at some point
+  #   See https://github.com/astral-sh/uv/issues/8716
+  "Typing :: Typed",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Free Threading :: 3 - Stable",
 ]
+
 dependencies = [
   "click (>=8.3)",
   "fastjsonschema (>=2.21)",
