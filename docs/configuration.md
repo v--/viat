@@ -1,6 +1,7 @@
 # Configuration
 
 The following are the default options that roughly correspond to an empty `config.toml` file (see the [tracker API reference](./api/providers/tracker/) and [storage API reference](./api/providers/storage/) for greater detail):
+
 ```toml
 [tracker]
 provider = "glob"  # can be set to "git"

@@ -4,7 +4,9 @@ A tool for managing **vi**rtual file **at**tributes.
 
 Viat allows recording file attributes in a plain text file. The main unit of operation is a vault, which is determined by `.viat` subdirectory. In the simplest case, this subdirectory contains `config.toml`, `storage.toml` and possibly `schema.json`.
 
-In short, in an empty vault, the command
+The package is published as [`viat`](https://pypi.org/project/viat/) on PyPI. See the [installation page](./installation) for more details.
+
+For usage, see the [tutorial](./usage) and the [man page](./man). In short, in an empty vault, the command
 
 ```shell
 viat set file.pdf --raw attr value
