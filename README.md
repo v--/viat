@@ -7,7 +7,7 @@
 
 A tool for managing **vi**rtual file **at**tributes.
 
-Viat allows recording file attributes in a plain text file. The main unit of operation is a vault, which is determined by `.viat` subdirectory. In the simplest case, this subdirectory contains `config.toml`, `storage.toml` and possibly `schema.json`.
+The essence of the tool is that the attributes are stored in plain text formats that can be edited and committed to version control. The main unit of operation is a vault, which is determined by `.viat` subdirectory. In the simplest case, this subdirectory contains `config.toml`, `storage.toml` and possibly `schema.json`.
 
 In short, in an empty vault, the command
 
@@ -112,6 +112,16 @@ path=zarathustra.pdf publisher= rating= author= year=
 
 #### Schemas
 
+At this point, `.viat/storage.toml` should now look as follows:
+
+```toml
+["tractatus.pdf"]
+author = "Ludwig Wittgenstein"
+year = 1921
+rating = 4
+publisher = "Annalen der Naturphilosophie"
+```
+
 It makes sense to utilize JSON schemas. Let us add the following to `.viat/schema.json`:
 
 ```json
@@ -130,20 +140,10 @@ $ viat set tractatus.pdf --raw year string
 Error: Validation error for 'tractatus.pdf': data.year must be number.
 ```
 
-The essence of the tool is that the attributes are stored in plain text formats that can be edited committed to version control. For example, `.viat/storage.toml` should now look as follows:
-
-```toml
-["tractatus.pdf"]
-author = "Ludwig Wittgenstein"
-year = 1921
-rating = 4
-publisher = "Annalen der Naturphilosophie"
-```
-
 If we manually change the year to "string", we will get a warning when loading the vault:
 
 ```shell
-$ viat get tractatus.pdf rating
+$ viat get tractatus.pdf year
 Warning: Validation error in stored data for 'tractatus.pdf': data.year must be number.
 4
 ```
@@ -158,7 +158,7 @@ Warning: File 'book.pdf' is not being tracked.
 Error: Attribute 'rating' has not been set for 'book.pdf'.
 ```
 
-Such discrepancies can be determined relatively easily:
+Such discrepancies are straightforward to determine:
 
 ```bash
 $ viat stale
@@ -167,11 +167,11 @@ $ viat tracked --no-data
 book.pdf
 ```
 
-For such cases, we provide the helpers `viat mv` and `viat rm`, but otherwise avoid being too clever.
+We provide the helpers `viat mv` and `viat rm`, but otherwise avoid being too clever.
 
 ### Programmatic usage
 
-The programmatic usage is straightforward enough because of the [API reference](https://viat.readthedocs.io/en/stable/api/protocols/). Here is a brief continuation of the above example:
+The programmatic usage should be straightforward. Here is a brief continuation of the above example:
 
 ```python
 vault = autoload_vault()
@@ -192,6 +192,8 @@ with vault.storage as conn:
         mut['year'] = 1921
 ```
 
+Refer to the [API reference](https://viat.readthedocs.io/en/stable/api/protocols/) for details.
+
 ## Installation
 
 The [`viat` PyPI package](https://pypi.org/project/viat/) contains the core programmatic API.
@@ -205,13 +207,13 @@ uv tool install viat
 
 The git tracker requires the `git` extra.
 
-To install from GitHub, you must use the following:
+To install from GitHub, you can use `uv`:
 
 ```shell
 uv tool install viat --from git+https://github.com/v--/viat
 ```
 
-Sometimes a particular feature branch need to be tested. For installing a fixed revision (i.e. common/branch/tag), the following should work (if `extra-name` is needed, use `viat@rev[extra-name]`):
+Sometimes a particular feature branch needs to be tested. For installing a fixed revision (i.e. common/branch/tag), the following should work (if `extra-name` is needed, use `viat@rev[extra-name]`):
 
 ```shell
 uv tool install viat --from git+https://github.com/v--/viat@rev
@@ -228,7 +230,7 @@ uv tool install viat --from dist/*.whl
 pipx install --include-deps dist/*.whl
 ```
 
-Tasks inside the repository like linting and testing use are summarized in [`poe.toml`](./poe.toml) (configuration for [poethepoet](https://pypi.org/project/poethepoet/)). For example, building the documentation requires some hacks, but can be done using a single command:
+Tasks inside the repository like linting and testing use are summarized in [`poe.toml`](./poe.toml) (configuration for [poethepoet](https://pypi.org/project/poethepoet/)). For example, building the documentation requires some hacks internally, but is wrapped in a single command:
 
 ```shell
 uv run poe docs-build
