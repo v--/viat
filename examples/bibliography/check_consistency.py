@@ -1,8 +1,7 @@
-#!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.14"
 # dependencies = [
-#     "viat >= 0.10.3",
+#     "viat (>=0.10.3)",
 #     "notebook[bibtools] @ https://github.com/v--/notebook.git",
 # ]
 # ///
@@ -10,7 +9,6 @@
 import pathlib
 from collections.abc import Iterable
 
-import click
 from notebook.commands.bibtools.file import read_entries
 
 from viat import ViatAttributeStorageConnection, autoload_vault
@@ -39,11 +37,11 @@ if __name__ == '__main__':
         viat_refs = frozenset(viat_known_ref_map.keys())
 
         for bibtex_ref in bibtex_refs.difference(viat_refs):
-            click.echo(f'No known file corresponds to the BibTeX ref {bibtex_ref!r}.')
+            print(f'No known file corresponds to the BibTeX ref {bibtex_ref!r}.')
 
         for bibtex_ref in viat_refs.difference(bibtex_refs):
             file_path = viat_known_ref_map[bibtex_ref]
-            click.echo(f'Missing BibTeX ref {bibtex_ref!r} for file {file_path.name!r}.')
+            print(f'Missing BibTeX ref {bibtex_ref!r} for file {file_path.name!r}.')
 
             if not vault.tracker.is_tracked(file_path):
-                click.echo(f'The file {file_path.name!r} has Viat metadata stored, but is not tracked by Viat.')
+                print(f'The file {file_path.name!r} has Viat metadata stored, but is not tracked by Viat.')

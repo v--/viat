@@ -1,6 +1,6 @@
 # Bibliography management
 
-I gradually crated my own [BibLaTeX manager](https://github.com/v--/notebook#biblatex-tools), which helps maintaining `.bib` files. I want to connect this manager with real files, and Viat's programmatic API helps with this. I will present a very cut-down version of what I actually use since my script is made to manage hundreds of diverse files.
+Over the years, I gradually crated my own [BibLaTeX manager](https://github.com/v--/notebook#biblatex-tools), which helps me maintain consistency in `.bib` files. Viat's programmatic API helps me connect bib entries with actual files. I will present a very cut-down version of what I actually use since my script is made to manage hundreds of diverse files.
 
 As an example, I will use the [freely available](https://web.stanford.edu/~boyd/cvxbook/) book "Convex Optimization" by Boyd and Vandenberghe, provided here as the dummy file `Stephen Boyd, Lieven Vandenberghe - Convex Optimization.pdf`.
 
@@ -51,10 +51,10 @@ ref = "BoydVandenberghe2004ConvexOptimization"
 ref = "InvalidRef"
 ```
 
-This is straightforward enough, but consistency has to be maintained. The script [`check_consistency.py`](./check_consistency.py) checks for three-way consistency between tracked files, files known to the Viat storage and BibTeX entries. Running in in this directory, we get the following output:
+This is straightforward enough, but consistency has to be maintained. The script [`check_consistency.py`](./check_consistency.py) checks for three-way consistency between tracked files, files known to the Viat storage and BibTeX entries. Running the script in this directory, we get the following output:
 
 ```console
-$ python -m check_consistency
+$ uv run --script check_consistency
 No known file corresponds to the BibTeX ref 'ValidRef'.
 Missing BibTeX ref InvalidRef for file 'invalid.pdf'.
 The file 'invalid.pdf' has Viat metadata stored, but is not tracked by Viat.
