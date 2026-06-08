@@ -249,4 +249,10 @@ When managing lots of files, there comes a point when metadata needs to be attac
 
 * XMP ([extensible metadata platform](https://developer.adobe.com/xmp/docs/)) files are designed to be used by arbitrary tools and can be easily tracked using version control, but are cumbersome to manage.
 
-Perhaps I am missing some other approaches, but at this point it should be clear that there is no convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. At some point I decided to refine the script, and so Viat was born.
+Perhaps I am missing some other approaches, but at this point it should be clear that there is no established convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. At some point I decided to refine the script, and so Viat was born.
+
+In the meantime, a somewhat similar [ufa](https://github.com/henriquetft/ufa) ("user file attributes") tool appeared. It is still quite different:
+* ufa does not expose a programmatic API.
+* ufa is meant to be better integrated into the ambient system, supporting FUSE and a Nautilus extension.
+* ufa uses SQLite databases (unlike our plain text files).
+* ufa does not support validation out-of-the-box.
