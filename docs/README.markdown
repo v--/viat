@@ -5,12 +5,12 @@
 
 This directory contains some documentation files to be used with [zensical](https://zensical.org/). Several markdown files are missing; these can be generated using
 
-```shell
+```console
 uv run poe docs-aux
 ```
 
 The entire documentation build process can be performed using
 
-```shell
+```console
 uv run poe docs-build
 ```

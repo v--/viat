@@ -11,7 +11,7 @@ The essence of the tool is that the attributes are stored in plain text formats 
 
 In short, in an empty vault, the command
 
-```shell
+```console
 viat set file.pdf --raw attr value
 ```
 
@@ -40,13 +40,13 @@ We give a usage tutorial here; refer to the [online documentation](https://viat.
 
 First, a vault must be initialized:
 
-```shell
+```console
 viat init
 ```
 
 The vault is determined by a `.viat` subfolder that contains `config.toml` and `storage.toml` files (JSON is also supported for both). We can immediately set attributes for any file on the file system:
 
-```shell
+```console
 $ viat update tractatus.pdf '{"author": "Ludwig Wittgenstein", "year": 1921}'
 Warning: File 'tractatus.pdf' is not being tracked.
 {"author": "Ludwig Wittgenstein", "year": 1921}
@@ -63,14 +63,14 @@ patterns = ["*.pdf"]
 
 With this, we can add new properties without warnings:
 
-```shell
+```console
 $ viat set tractatus.pdf rating 4
 {"author": "Ludwig Wittgenstein", "year": 1921, "rating": 4}
 ```
 
 The above worked because "true" is a valid JSON value; if we were to set a string instead, we would have to escape it in quotes, which is inconvenient. Instead, we can treat the value as a string by passing the `--raw` flag:
 
-```shell
+```console
 $ viat set --raw tractatus.pdf publisher 'Annalen der Naturphilosophie'
 ...
 ```
@@ -79,7 +79,7 @@ $ viat set --raw tractatus.pdf publisher 'Annalen der Naturphilosophie'
 
 Tracking is useful for ensuring consistency with the file system, but also for shell scripting. For example, the following command produces a table of variables:
 
-```shell
+```console
 $ viat shell-export
 path=tractatus.pdf publisher='Annalen der Naturphilosophie' rating=4 author='Ludwig Wittgenstein' year=1921
 ```
@@ -104,7 +104,7 @@ end
 
 If we add another file, `zarathustra.pdf`, and if the tracker lists it after `tractatus.pdf`, then Viat would try to reset the missing attributes to avoid reusing variables from the previous loop iteration:
 
-```shell
+```console
 $ viat shell-export
 path=tractatus.pdf publisher='Annalen der Naturphilosophie' rating=4 author='Ludwig Wittgenstein' year=1921
 path=zarathustra.pdf publisher= rating= author= year=
@@ -135,14 +135,14 @@ It makes sense to utilize JSON schemas. Let us add the following to `.viat/schem
 
 Now we can no longer set the year to anything that is not a number:
 
-```shell
+```console
 $ viat set tractatus.pdf --raw year string
 Error: Validation error for 'tractatus.pdf': data.year must be number.
 ```
 
 If we manually change the year to "string", we will get a warning when loading the vault:
 
-```shell
+```console
 $ viat get tractatus.pdf year
 Warning: Validation error in stored data for 'tractatus.pdf': data.year must be number.
 4
@@ -152,7 +152,7 @@ Warning: Validation error in stored data for 'tractatus.pdf': data.year must be 
 
 If we move `tractatus.pdf` to `book.pdf`, viat will no longer know about it:
 
-```shell
+```console
 $ viat get book.pdf rating
 Warning: File 'book.pdf' is not being tracked.
 Error: Attribute 'rating' has not been set for 'book.pdf'.
@@ -200,7 +200,7 @@ The [`viat` PyPI package](https://pypi.org/project/viat/) contains the core prog
 
 To install the `viat` executable for the current user, you can use [`pipx`](https://pipx.pypa.io) or [`uv`](https://docs.astral.sh/uv/):
 
-```shell
+```console
 pipx install viat
 uv tool install viat
 ```
@@ -209,19 +209,19 @@ The git tracker requires the `git` extra.
 
 To install from GitHub, you can use `uv`:
 
-```shell
+```console
 uv tool install viat --from git+https://github.com/v--/viat
 ```
 
 Sometimes a particular feature branch needs to be tested. For installing a fixed revision (i.e. common/branch/tag), the following should work (if `extra-name` is needed, use `viat@rev[extra-name]`):
 
-```shell
+```console
 uv tool install viat --from git+https://github.com/v--/viat@rev
 ```
 
 To install `viat` from a cloned repository, you can use the following:
 
-```shell
+```console
 uv sync
 uv build --wheel
 # Once built, we can install using uv
@@ -232,7 +232,7 @@ pipx install --include-deps dist/*.whl
 
 Tasks inside the repository like linting and testing use are summarized in [`poe.toml`](./poe.toml) (configuration for [poethepoet](https://pypi.org/project/poethepoet/)). For example, building the documentation requires some hacks internally, but is wrapped in a single command:
 
-```shell
+```console
 uv run poe docs-build
 ```
 

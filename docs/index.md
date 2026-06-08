@@ -8,7 +8,7 @@ The package is published as [`viat`](https://pypi.org/project/viat/) on PyPI. Se
 
 For usage, see the [tutorial](./usage) and the [man page](./man). In short, in an empty vault, the command
 
-```shell
+```console
 viat set file.pdf --raw attr value
 ```
 

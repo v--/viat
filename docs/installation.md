@@ -4,13 +4,13 @@ The [`viat` PyPI package](https://pypi.org/project/viat/) contains the core prog
 
 To install the `viat` executable for the current user, you can use [`pipx`](https://pipx.pypa.io):
 
-```shell
+```console
 pipx install viat
 ```
 
 or [`uv`](https://docs.astral.sh/uv/):
 
-```shell
+```console
 uv tool install viat
 ```
 
