@@ -1,0 +1,14 @@
+["systemd.host.system"]
+dest = "/etc/systemd/system"
+privileged = true
+scopes = [
+    "host",
+]
+strategy = "copy"
+
+["systemd.host.user"]
+dest = "$XDG_CONFIG_HOME/systemd/user"
+scopes = [
+    "host",
+]
+strategy = "copy"

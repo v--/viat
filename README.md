@@ -7,7 +7,7 @@
 
 A tool for managing **vi**rtual file **at**tributes.
 
-The essence of the tool is that the attributes are stored in plain text formats that can be edited and committed to version control. The main unit of operation is a vault, which is determined by `.viat` subdirectory. In the simplest case, this subdirectory contains `config.toml`, `storage.toml` and possibly `schema.json`.
+The essence of the tool is that the attributes are stored in plain text formats that can be edited and committed to version control. The main unit of operation is a vault, which is determined by `.viat` subdirectory. In the simplest case, this subdirectory contains `config.toml`, `storage.toml` and possibly `schema.json`. The source repository contains [several examples](https://github.com/v--/viat/blob/master/examples) of how this project can be useful.
 
 In short, in an empty vault, the command
 
@@ -34,7 +34,7 @@ See also the [documentation on ReadTheDocs](https://viat.readthedocs.io/)
 
 ## Usage
 
-We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page [`viat(1)`](https://viat.readthedocs.io/en/stable/man/) for more details.
+We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page [`viat(1)`](https://viat.readthedocs.io/en/stable/man/) for more details. The [`examples`](https://github.com/v--/viat/blob/master/examples) directory contains more thorough examples like scripts for managing dotfiles and bibliographies.
 
 ### Command-line usage
 
@@ -77,7 +77,9 @@ $ viat set --raw tractatus.pdf publisher 'Annalen der Naturphilosophie'
 
 #### Scripting
 
-Tracking is useful for ensuring consistency with the file system, but also for shell scripting. For example, the following command produces a table of variables:
+Tracking is useful for ensuring consistency with the file system, but also for shell scripting.
+
+For example, the following command produces a table of variables:
 
 ```console
 $ viat shell-export

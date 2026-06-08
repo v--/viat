@@ -1,0 +1,10 @@
+{
+  "properties": {
+    "scopes": { "type": "array", "items": { "type": "string" } },
+    "strategy": { "enum": ["copy", "root", "shallow", "deep"] },
+    "privileged": { "type": "boolean" },
+    "dest": { "type": "string" }
+  },
+  "required": ["strategy", "dest", "scopes"],
+  "additionalProperties": false
+}

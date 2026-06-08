@@ -1,0 +1,24 @@
+#!/usr/bin/env fish
+
+set worker (dirname (readlink --canonicalize (status --current-filename)))/link-dotfiles-worker
+
+if test -z "$XDG_CONFIG_HOME"
+    set --global --export XDG_CONFIG_HOME $HOME/.config
+end
+
+if test -z "$XDG_DATA_HOME"
+    set --global --export XDG_DATA_HOME $HOME/.local/share
+end
+
+for line in (viat shell-export)
+    eval "export $line"
+    set dest (eval echo $dest)
+
+    if echo $scopes | grep --quiet $hostname
+        if test -n "$privileged"
+            sudo $worker $path $dest $strategy
+        else
+            $worker $path $dest $strategy
+        end
+    end
+end

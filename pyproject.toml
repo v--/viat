@@ -36,6 +36,7 @@ git = [
 [project.urls]
 Repository = "https://github.com/v--/viat.git"
 Changelog = "https://github.com/v--/viat/blob/master/CHANGELOG.md"
+Examples = "https://github.com/v--/viat/blob/master/examples"
 Documentation = "https://viat.readthedocs.io/"
 
 [project.scripts]
@@ -72,6 +73,9 @@ include = "./poe.toml"
 extend = ".venv/share/ruff/ruff.ivasilev.toml"
 
 [tool.ruff.lint.extend-per-file-ignores]
+"examples/bibliography/check_consistency.py" = [
+  "D1", # undocumented-*
+]
 "src/helpers/*.py" = [
   "D1", # undocumented-*
 ]

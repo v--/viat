@@ -1,0 +1,2 @@
+[tracker.glob]
+patterns = ["*.{pdf,djvu,epub,fb2}"]
