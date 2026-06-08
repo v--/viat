@@ -54,7 +54,7 @@ def load_glob_tracker_flags_from_config(loader: ConfigLoader) -> Sequence[str]:
         case JsonArray():
             for flag in flags:
                 # The actual flags will get validated when constructing the config
-                if not isinstance(flags, str):
+                if not isinstance(flag, str):
                     raise ViatConfigError(f'Invalid glob pattern {flag} in tracker.glob.flags')
 
             return cast('Sequence[str]', flags)
