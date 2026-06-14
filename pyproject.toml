@@ -18,6 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Programming Language :: Python :: Free Threading :: 3 - Stable",
 ]
 
@@ -88,7 +89,7 @@ include = "./poe.toml"
 
 # tox
 [tool.tox]
-env_list = ["lint", "typing", "3.12", "3.13", "3.14", "3.15"]
+env_list = ["lint", "typing", "3.12", "3.13", "3.14", "3.15", "3.15t"]
 
 [tool.tox.env_run_base]
 dependency_groups = ["test"]
