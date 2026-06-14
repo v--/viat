@@ -9,20 +9,28 @@ jobs:
       matrix:
         python: [3.12, 3.13, 3.14, 3.15, 3.15t]
 
-    runs-on:  ubuntu-slim
-
+    runs-on:  ubuntu-26.04
     steps:
     - uses: actions/checkout@v6
+
+    - name: Install prerequisites on Ubuntu
+      if: matrix.python == '3.15' || matrix.python == '3.15t'
+      run: |
+        sudo apt update
+        sudo apt install --yes libffi-dev libgit2-dev
 
     - uses: astral-sh/setup-uv@v7
       with:
         python-version: ${{ matrix.python }}
 
     - name: Install dependencies
-      run: uv sync --all-extras
+      run: uv sync --group lint --group typing --group test --no-default-groups
 
     - name: Lint
-      run: uv run poe lint
+      run: uv run --no-sync ruff check
+
+    - name: Typing
+      run: uv run --no-sync mypy
 
     - name: Test
-      run: uv run poe test
+      run: uv run --no-sync pytest
