@@ -1,6 +1,9 @@
 [tasks.test]
 cmd = "pytest"
 
+[tasks.test-multienv]
+cmd = "tox"
+
 [tasks.lint]
 sequence = [
   { cmd = "ruff check $path" },
