@@ -13,7 +13,7 @@ def temp_directory() -> Iterable[pathlib.Path]:
     try:
         yield tmpdir
     finally:
-         # Make sure the directory can be deleted in case the tests messed the permissions up
+        # Make sure the directory can be deleted in case the tests messed the permissions up
         tmpdir.chmod(0o755)
 
         for path, dir_names, file_names in tmpdir.walk():

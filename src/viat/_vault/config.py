@@ -7,4 +7,3 @@ class ViatVaultStaticConfig:
 
     skip_validation: bool = False
     """Skip tracker and schema validation."""
-

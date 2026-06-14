@@ -56,4 +56,3 @@ def load_json_storage_from_config(resolver: ViatPathResolver, static_config: Via
 
     storage_config = JsonAttributeStorageConfig(storage_path, schema_path, indent)
     return JsonAttributeStorage(storage_config, resolver)
-

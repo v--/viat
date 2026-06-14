@@ -52,7 +52,7 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
         validator: Callable[[JsonT], None] | None = None,
     ) -> None:
         self.payload = payload
-        self.resolver =resolver
+        self.resolver = resolver
         self.validator = validator
         self.has_mutations = False
         self._locked = set[pathlib.Path]()

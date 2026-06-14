@@ -16,5 +16,3 @@ def stale(ctx: click.Context, output_json: bool) -> None:
         stale_paths = [path for path in conn.iter_known_paths() if not vault.tracker.is_tracked(path)]
 
     print_paths(stale_paths, output_json=output_json)
-
-

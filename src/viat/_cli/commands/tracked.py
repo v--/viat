@@ -25,4 +25,3 @@ def tracked(ctx: click.Context, output_json: bool, no_data: bool) -> None:
             pass
 
         print_paths(vault.tracker.iter_paths(), output_json=output_json)
-

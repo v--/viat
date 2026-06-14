@@ -68,9 +68,6 @@ class GitFileTracker(TrackerBaseMixin, ViatFileTracker):
         except KeyError:
             raise ViatFileTrackerError('No git HEAD pointer') from None
 
-        if ref.raw_name:
-            pass
-
         if not isinstance(ref, pygit2.Commit):
             raise ViatFileTrackerError('git HEAD does not point to a commit')
 

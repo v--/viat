@@ -32,7 +32,7 @@ type AtomicJsonT = bool | float | str | None
 """Type union of atomic JSON types."""
 
 
-type JsonArrayT = Sequence['JsonT']
+type JsonArrayT = Sequence[JsonT]
 """A type hint for immutable JSON arrays.
 
 This is intended to be used for type hints. For instance checks,
@@ -51,7 +51,7 @@ class JsonArray(Sequence['JsonT'], abc.ABC):
 JsonArray.register(list)
 
 
-type JsonObjectT = Mapping[str, 'JsonT']
+type JsonObjectT = Mapping[str, JsonT]
 """A type hint for immutable JSON objects.
 
 This is intended to be used for type hints. For instance checks,

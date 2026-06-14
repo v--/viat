@@ -19,4 +19,3 @@ def get(ctx: click.Context, path: pathlib.Path, attr: str, raw: bool) -> None:
 
     with vault.storage as conn, conn.get_reader(path) as reader:
         print_json_value(reader[attr], raw=raw)
-

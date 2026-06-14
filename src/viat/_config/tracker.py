@@ -73,4 +73,3 @@ def load_git_tracker_from_config(resolver: ViatPathResolver, static_config: Viat
     )
 
     return GitFileTracker(tracker_config, resolver, static_config)
-

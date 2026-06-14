@@ -17,7 +17,6 @@ def mv(ctx: click.Context, src: pathlib.Path, dest: pathlib.Path, force: bool) -
     if dest.exists() and not force:
         raise ViatVaultError(f'File {dest.as_posix()!r} already exists')
 
-
     vault = autoload_vault(ctx.obj.vault_config)
     vault.tracker.validate_tracked(src)
 
