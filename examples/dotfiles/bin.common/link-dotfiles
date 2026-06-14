@@ -1,6 +1,19 @@
 #!/usr/bin/env fish
+#
+# This file and `link-dotfiles-worker` are dotfile management scripts. Usage is discussed in
+#   https://github.com/v--/viat/blob/master/examples/dotfiles
 
-set worker (dirname (readlink --canonicalize (status --current-filename)))/link-dotfiles-worker
+which gum >/dev/null
+or exit 1
+
+# We rely on the worker being in the same directory because, while bootstrapping the dotfiles,
+# $PATH may not yet contain the directory with these scripts.
+set worker (status dirname)/link-dotfiles-worker
+
+if test ! -e "$worker"
+    gum log --level fatal "Could not find the auxiliary script `link-dotfiles-worker`` in the same directory as `link-dotfiles`."
+    exit 1
+end
 
 if test -z "$XDG_CONFIG_HOME"
     set --global --export XDG_CONFIG_HOME $HOME/.config

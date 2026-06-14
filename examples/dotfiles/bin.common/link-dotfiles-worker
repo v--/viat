@@ -1,102 +1,92 @@
 #!/usr/bin/env fish
+#
+# This file and `link-dotfiles` are dotfile management scripts. Usage is discussed in
+#   https://github.com/v--/viat/blob/master/examples/dotfiles
 
-which stat realpath mkdir rm ln cp >/dev/null
+which gum stat realpath mkdir rm ln cp >/dev/null
 or exit 1
 
-function confirm --argument question
-  while true
-    read --prompt "echo '$question '" yn
-
-    switch "$yn"
-      case 'y*' 'Y*'
-        return 0
-      case 'n*' 'N*'
-        return 1
-    end
-  end
-end
-
 function file_id -a path
-  stat --dereference --format='%d:%i' $path 2>/dev/null
-  or echo -1
+    stat --dereference --format='%d:%i' $path 2>/dev/null
+    or echo -1
 end
 
 function link -a src dest
-  if test (file_id $src) = (file_id $dest)
-    return 2
-  end
-
-  # If file exists or is an invalid symlink
-  if test -e $dest -o -L $dest
-    if confirm "Remove $dest in order to link $src?"
-      rm --recursive $dest
-    else
-      return 1
+    if test (file_id $src) = (file_id $dest)
+        return 2
     end
-  end
 
-  echo "Linking $src to $dest"
-  mkdir --parents (dirname $dest)
-  ln --symbolic (realpath $src) $dest
-  return 0
+    # If file exists or is an invalid symlink
+    if test -e $dest -o -L $dest
+        if gum confirm "Remove $dest in order to link $src?"
+            rm --recursive $dest
+        else
+            return 1
+        end
+    end
+
+    gum log --level info "Linking $src to $dest."
+    mkdir --parents (dirname $dest)
+    ln --symbolic (realpath $src) $dest
+    return 0
 end
 
 function copy -a src dest
-  if cmp --silent $src $dest
-    return 2
-  end
-
-  # If file exists or is an invalid symlink
-  if test -e $dest -o -L $dest
-    if confirm "Remove $dest in order to copy $src?"
-      rm --recursive $dest
-    else
-      return 1
+    if cmp --silent $src $dest
+        return 2
     end
-  end
 
-  echo "Copying $src to $dest"
-  mkdir --parents (dirname $dest)
-  cp $src $dest
-  return 0
+    # If file exists or is an invalid symlink
+    if test -e $dest -o -L $dest
+        if gum confirm "Remove $dest in order to copy $src?"
+            rm --recursive $dest
+        else
+            return 1
+        end
+    end
+
+    gum log --level info "Copying $src to $dest."
+    mkdir --parents (dirname $dest)
+    cp $src $dest
+    return 0
 end
 
 function process_directory -a src dest strategy
-  # If the dest is a bad symlink
-  if test ! -e $dest -a -L $dest
-    echo "$dest is a bad symlink, removing"
-    rm $dest
-  end
+    # If the dest is a bad symlink
+    if test ! -e $dest -a -L $dest
+        gum log --level warn "$dest is a bad symlink, removing."
+        rm $dest
+    end
 
-  if test $strategy = 'root'
-    link $src $dest
-    exit
-  end
+    if test $strategy = root
+        link $src $dest
+        exit
+    end
 
-  if not test -e $dest
-    echo "Creating $dest"
-    mkdir --parents $dest
-  end
+    if not test -e $dest
+        gum log --level info "Creating $dest."
+        mkdir --parents $dest
+    end
 
-  switch $strategy
-    case 'shallow'
-      for file in (find $src -mindepth 1 -maxdepth 2 -type f,l)
-        link $file $dest/(realpath --no-symlinks --relative-to $src $file)
-      end
-    case 'deep'
-      for file in (find $src -mindepth 1 -type f,l)
-        link $file $dest/(realpath --no-symlinks --relative-to $src $file)
-      end
-    case 'copy'
-      for file in (find $src -mindepth 1 -type f,l)
-        copy $file $dest/(realpath --no-symlinks --relative-to $src $file)
-      end
-  end
+    switch $strategy
+        case shallow
+            for file in (find $src -mindepth 1 -maxdepth 2 -type f,l)
+                link $file $dest/(realpath --no-symlinks --relative-to $src $file)
+            end
+        case deep
+            for file in (find $src -mindepth 1 -type f,l)
+                link $file $dest/(realpath --no-symlinks --relative-to $src $file)
+            end
+        case copy
+            for file in (find $src -mindepth 1 -type f,l)
+                copy $file $dest/(realpath --no-symlinks --relative-to $src $file)
+            end
+    end
 end
 
 if test (count $argv) -ne 3
-  echo 'Expected exactly three arguments: src, dest and strategy' >&2
-  exit 1
+    gum log --level fatal 'Expected exactly three arguments: src, dest and strategy.' >&2
+    exit 1
 end
 
 process_directory $argv
