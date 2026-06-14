@@ -35,10 +35,8 @@ __all__ = [
     'ViatMissingAttributeError',
     'ViatValidationError',
     'ViatVault',
-    'ViatVault',
     'ViatVaultError',
     'ViatVaultStaticConfig',
     'ViatWarning',
-    'autoload_vault',
     'autoload_vault',
 ]

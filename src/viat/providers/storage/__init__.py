@@ -9,7 +9,6 @@ __all__ = [
     'JsonAttributeStorage',
     'JsonAttributeStorageConfig',
     'JsonAttributeStorageConnection',
-    'JsonAttributeStorageMutator',
     'TomlAttributeStorage',
     'TomlAttributeStorageConfig',
 ]

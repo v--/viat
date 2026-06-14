@@ -1,7 +1,7 @@
 """A convenience module that lists all [`ViatFileTracker`][viat.protocols.ViatFileTracker] providers."""
 
 from .git import GitFileTracker, GitFileTrackerConfig
-from .glob import GlobFileTracker, GlobFileTrackerConfig
+from .glob import GlobFileTracker, GlobFileTrackerConfig, validate_wcmatch_flags
 
 
 __all__ = [
