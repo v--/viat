@@ -11,12 +11,19 @@ from .exceptions import (
     ViatVaultError,
     ViatWarning,
 )
-from .protocols import ViatAttributeMutator, ViatAttributeStorage, ViatAttributeStorageConnection, ViatFileTracker
+from .protocols import (
+    ViatAttributeMutator,
+    ViatAttributeReader,
+    ViatAttributeStorage,
+    ViatAttributeStorageConnection,
+    ViatFileTracker,
+)
 from .vault import ViatVault, ViatVaultStaticConfig, autoload_vault
 
 
 __all__ = [
     'ViatAttributeMutator',
+    'ViatAttributeReader',
     'ViatAttributeStorage',
     'ViatAttributeStorageConnection',
     'ViatAttributeStorageError',
