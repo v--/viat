@@ -973,7 +973,7 @@ dev = [
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "ruff", specifier = ">=0.15" },
     { name = "ruff-config-ivasilev", git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15post7" },
-    { name = "tox", specifier = ">=4.5" },
+    { name = "tox", specifier = ">=4.50" },
     { name = "viat", extras = ["git"], specifier = ">=0.0.0" },
     { name = "zensical", specifier = ">=0.0.41" },
 ]
