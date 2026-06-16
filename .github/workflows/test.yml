@@ -1,6 +1,11 @@
 name: Test
 
-on: [push]
+on:
+  push:
+    branches:
+      - 'master'
+
+  pull_request:
 
 jobs:
   test:
@@ -19,12 +24,13 @@ jobs:
         sudo apt update
         sudo apt install --yes libffi-dev libgit2-dev
 
-    - uses: astral-sh/setup-uv@v7
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v7
       with:
         python-version: ${{ matrix.python }}
 
     - name: Install dependencies
-      run: uv sync --group lint --group typing --group test --no-default-groups
+      run: uv sync --frozen --group lint --group typing --group test --no-default-groups
 
     - name: Lint
       run: uv run --no-sync ruff check
