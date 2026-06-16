@@ -97,7 +97,7 @@ def build_man_md() -> None:
     unescaped = re.sub('\x1B\\[[0-9;]*[JKmsu]', '', rendered)
 
     with open('docs/man.md', 'w') as file:
-        file.write('```troff\n')
+        file.write('```\n')
         file.write(unescaped)
         file.write('```\n')
 
