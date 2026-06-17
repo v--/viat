@@ -232,7 +232,7 @@ uv tool install viat --from dist/*.whl
 pipx install --include-deps dist/*.whl
 ```
 
-Tasks inside the repository like linting and testing use are summarized in [`poe.toml`](./poe.toml) (configuration for [poethepoet](https://pypi.org/project/poethepoet/)). For example, building the documentation requires some hacks internally, but is wrapped in a single command:
+Tasks inside the repository like linting and testing use are summarized in [`poe.toml`](https://github.com/v--/viat/blob/master/poe.toml) (configuration for [poethepoet](https://pypi.org/project/poethepoet/)). For example, building the documentation requires some hacks internally, but is wrapped in a single command:
 
 ```console
 uv run poe docs-build
@@ -254,6 +254,7 @@ When managing lots of files, there comes a point when metadata needs to be attac
 Perhaps I am missing some other approaches, but at this point it should be clear that there is no established convenient way to manage file metadata. A long time ago I wrote a small script that tracked "virtual" attributes across a directory by putting them into a single JSON file. At some point I decided to refine the script, and so Viat was born.
 
 In the meantime, a somewhat similar [ufa](https://github.com/henriquetft/ufa) ("user file attributes") tool appeared. It is still quite different:
+
 * ufa does not expose a programmatic API.
 * ufa is meant to be better integrated into the ambient system, supporting FUSE and a Nautilus extension.
 * ufa uses SQLite databases (unlike our plain text files).
