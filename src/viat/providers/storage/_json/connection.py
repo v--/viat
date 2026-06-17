@@ -79,7 +79,7 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
         rel_path = self._resolve_path(path)
 
         if rel_path in self._locked:
-            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {rel_path.as_posix()!r}')
+            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {rel_path}')
 
         stored_data = self.payload.get(rel_path.as_posix())
 
@@ -99,7 +99,7 @@ class JsonAttributeStorageConnection(ViatAttributeStorageConnection):
         rel_path = self._resolve_path(path)
 
         if rel_path in self._locked:
-            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {rel_path.as_posix()!r}')
+            raise ViatAttributeStorageError(f'There is already an active reader or mutator for {rel_path}')
 
         stored_data = self.payload.get(rel_path.as_posix())
 

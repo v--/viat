@@ -15,7 +15,7 @@ from viat.vault import autoload_vault
 def mv(ctx: click.Context, src: pathlib.Path, dest: pathlib.Path, force: bool) -> None:
     """Move a file along with its metadata."""
     if dest.exists() and not force:
-        raise ViatVaultError(f'File {dest.as_posix()!r} already exists')
+        raise ViatVaultError(f'File {dest} already exists')
 
     vault = autoload_vault(ctx.obj.vault_config)
     vault.tracker.validate_tracked(src)

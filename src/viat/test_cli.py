@@ -100,7 +100,7 @@ class TestGet:
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
             result = click_runner.invoke(viat, ['get', 'README.md', 'key'])
             assert result.stdout == '"value"\n'
-            assert result.stderr == "Warning: File 'README.md' is not being tracked.\n"
+            assert result.stderr == 'Warning: File README.md is not being tracked.\n'
 
     def test_path_relativization(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
         with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
@@ -117,7 +117,7 @@ class TestGet:
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
             result = click_runner.invoke(viat, ['get', 'README.md', 'key'])
             assert result.stdout == ''
-            assert result.stderr == "Error: Attribute 'key' has not been set for 'README.md'.\n"
+            assert result.stderr == "Error: Attribute 'key' has not been set for README.md.\n"
 
     def test_invalid_stored(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
         with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
@@ -140,7 +140,7 @@ class TestGet:
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
             result = click_runner.invoke(viat, ['get', 'README.md', 'key'])
             assert result.stdout == '"value"\n'
-            assert result.stderr == "Warning: Validation error in stored data for 'README.md': data.key must be number.\n"
+            assert result.stderr == 'Warning: Validation error in stored data for README.md: data.key must be number.\n'
 
     def test_invalid_stored_with_disabled_validation(self, vault_with_readme: ViatVault, click_runner: CliRunner) -> None:
         with vault_with_readme.storage as conn, conn.get_mutator('README.md') as mut:
@@ -215,7 +215,7 @@ class TestSet:
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
             result = click_runner.invoke(viat, ['set', 'README.md', 'key', '"value"'])
             assert result.stdout == ''
-            assert result.stderr == "Error: Validation error for 'README.md': data.key must be number.\n"
+            assert result.stderr == 'Error: Validation error for README.md: data.key must be number.\n'
 
 
 class TestTracked:
@@ -295,7 +295,7 @@ class TestMv:
         with contextlib.chdir(vault_with_readme.resolver.get_root()):
             result = click_runner.invoke(viat, ['mv', 'README.md', 'CHANGELOG.md'])
             assert result.stdout == ''
-            assert result.stderr == "Error: File 'CHANGELOG.md' already exists.\n"
+            assert result.stderr == 'Error: File CHANGELOG.md already exists.\n'
 
         assert readme.exists()
         assert changelog.read_text() == ''

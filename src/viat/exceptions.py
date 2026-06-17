@@ -66,7 +66,7 @@ class ViatMalformedStoredDataError(ValidationExceptionMixin, ViatAttributeStorag
         return self.args[0]
 
     def __str__(self) -> str:
-        return f'Malformed data stored for {self.get_path().as_posix()!r}'
+        return f'Malformed data stored for {self.get_path()}'
 
 
 class ViatValidationError(ValidationExceptionMixin, ViatAttributeStorageError):
@@ -84,7 +84,7 @@ class ViatValidationError(ValidationExceptionMixin, ViatAttributeStorageError):
         return self.args[0]
 
     def __str__(self) -> str:
-        return f'Validation error for {self.get_path().as_posix()!r}'
+        return f'Validation error for {self.get_path()}'
 
 
 class ViatMissingAttributeError(ViatAttributeStorageError, KeyError):
@@ -107,7 +107,7 @@ class ViatMissingAttributeError(ViatAttributeStorageError, KeyError):
         return self.args[1]
 
     def __str__(self) -> str:
-        return f'Attribute {self.get_attr()!r} has not been set for {self.get_path().as_posix()!r}'
+        return f'Attribute {self.get_attr()!r} has not been set for {self.get_path()}'
 
 
 class ViatCliError(ViatError):
@@ -130,7 +130,7 @@ class ViatUntrackedFileWarning(ViatAttributeStorageWarning):
         return self.args[0]
 
     def __str__(self) -> str:
-        return f'File {self.get_path().as_posix()!r} is not being tracked'
+        return f'File {self.get_path()} is not being tracked'
 
 
 class ViatStoredDataValidationWarning(ValidationExceptionMixin, ViatAttributeStorageWarning):
@@ -149,7 +149,7 @@ class ViatStoredDataValidationWarning(ValidationExceptionMixin, ViatAttributeSto
         return self.args[0]
 
     def __str__(self) -> str:
-        return f'Validation error in stored data for {self.get_path().as_posix()!r}'
+        return f'Validation error in stored data for {self.get_path()}'
 
 
 _warning_handlers: MutableSequence[Callable[[ViatWarning, int], bool | None]] = []
