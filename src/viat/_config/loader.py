@@ -27,7 +27,7 @@ class ConfigLoader:
     @staticmethod
     def try_load_json_file(file_path: pathlib.Path) -> 'ConfigLoader | None':
         try:
-            with file_path.open() as file:
+            with file_path.open(encoding='utf-8') as file:
                 contents = json.load(file)
         except FileNotFoundError:
             return None

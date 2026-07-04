@@ -15,7 +15,7 @@ def is_valid_variable_name(name: str) -> bool:
     Obviously valid variable names depend on the shell, but symbols and non-Latin letters
     are generally not supported.
     """
-    return re.fullmatch('[a-zA-Z_][a-zA-Z_0-9]*', name) is not None
+    return re.fullmatch(r'[a-zA-Z_][a-zA-Z_0-9]*', name) is not None
 
 
 @viat.command()

@@ -36,7 +36,7 @@ def build_man_page() -> None:
     ]
     click_man_page.date = date_str
 
-    with open('dist/man/viat.1', 'w') as man_file:
+    with open('dist/man/viat.1', 'w', encoding='utf-8') as man_file:
         man_file.writelines(str(click_man_page))
         man_file.write('.SH COMMANDS\n')
 
@@ -62,9 +62,9 @@ def build_man_page() -> None:
         )
 
         man_tutorial = re.sub(
-                '```\\w+',
+                r'```\w+',
                 '.IP',
-                re.sub('#### (?P<title>.*)', lambda match: '\\fB' + cast('str', match.group('title').upper()), extracted_readme_usage),
+                re.sub(r'#### (?P<title>.*)', lambda match: '\\fB' + cast('str', match.group('title').upper()), extracted_readme_usage),
             ) \
             .replace('```', '\n.P\n') \
             .replace('`', '"') \
@@ -84,7 +84,7 @@ def build_usage_md() -> None:
         .replace('#### ', '### ') \
         .replace('refer to the [online documentation](https://viat.readthedocs.io/) or to the man page', 'refer to the man page')
 
-    with open('docs/usage.md', 'w') as file:
+    with open('docs/usage.md', 'w', encoding='utf-8') as file:
         file.write('# Usage\n\n')
         file.write(adapted_usage)
 
@@ -94,18 +94,19 @@ def build_man_md() -> None:
     assert proc.stdout
     rendered = proc.stdout.read().decode('utf-8')
     # The replacement patterns are based on https://stackoverflow.com/a/78367016/2756776
+    # ruff:ignore[unraw-re-pattern]
     unescaped = re.sub('\x1B\\[[0-9;]*[JKmsu]', '', rendered)
 
-    with open('docs/man.md', 'w') as file:
+    with open('docs/man.md', 'w', encoding='utf-8') as file:
         file.write('```\n')
         file.write(unescaped)
         file.write('```\n')
 
 
 def extract_version_and_date_from_changelog() -> tuple[str, str]:
-    with open(ROOT / 'CHANGELOG.md') as file:
+    with open(ROOT / 'CHANGELOG.md', encoding='utf-8') as file:
         for line in file:
-            if match := re.match('## (?P<version>[\\d.]+) - (?P<date>[\\d-]+)', line):
+            if match := re.match(r'## (?P<version>[\d.]+) - (?P<date>[\d-]+)', line):
                 return match.group('version'), match.group('date')
 
         raise SystemExit('Could not determine the version and date from the changelog')
@@ -115,7 +116,7 @@ def extract_usage_from_readme(only_cli: bool) -> str:
     buffer = io.StringIO()
     in_usage_section = False
 
-    with open(ROOT / 'README.md') as file:
+    with open(ROOT / 'README.md', encoding='utf-8') as file:
         for line in file:
             if in_usage_section:
                 if line.startswith('### ' if only_cli else '## '):

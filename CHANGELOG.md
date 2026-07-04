@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+* Use an explicit UTF-8 encoding when reading `config.json`.
 * Use conventional string interpolation of paths.
 
 ## 0.10.5 - 2026-06-09

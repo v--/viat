@@ -4,6 +4,7 @@ from .config import GitFileTrackerConfig
 
 
 # This condition is reversed because griffe takes the latest import when collecting symbols for mkdocstrings
+# ruff:ignore[non-empty-init-module]
 if not TYPE_CHECKING:
     try:
         from .real import GitFileTracker
