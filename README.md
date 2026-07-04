@@ -2,7 +2,8 @@
 
 [![Tests](https://github.com/v--/viat/actions/workflows/test.yml/badge.svg)](https://github.com/kcroker/dpsprep/actions/workflows/test.yml)
 [![ReadTheDocs](https://img.shields.io/readthedocs/viat)](https://viat.readthedocs.io/)
-[![PyPI Package](https://img.shields.io/pypi/v/viat)](https://pypi.org/project/viat/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/viat.svg)](https://pypi.org/project/viat/)
+[![PyPI - Version](https://img.shields.io/pypi/v/viat)](https://pypi.org/project/viat/)
 [![AUR Package](https://img.shields.io/aur/version/viat)](https://aur.archlinux.org/packages/viat)
 
 A tool for managing **vi**rtual file **at**tributes.
