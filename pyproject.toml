@@ -50,8 +50,8 @@ viat = "viat.cli:viat"
 
 [dependency-groups]
 lint = [
-  "ruff (>=0.15)",
-  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15post7",
+  "ruff (>=0.15.20)",
+  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15.post8",
 ]
 
 typing = [
@@ -67,7 +67,7 @@ test = [
 docs = [
   "click-man (>=0.5.1)",
   "mkdocstrings-python (>=2)",
-  "zensical (>=0.0.41)",
+  "zensical (>=0.0.46)",
 ]
 
 dev = [
@@ -111,6 +111,7 @@ commands = [["mypy", "--package", "viat"]]
 # ruff
 [tool.ruff]
 extend = ".venv/share/ruff/ruff.ivasilev.toml"
+preview = true
 
 [tool.ruff.lint.extend-per-file-ignores]
 "examples/bibliography/check_consistency.py" = [
@@ -118,6 +119,9 @@ extend = ".venv/share/ruff/ruff.ivasilev.toml"
 ]
 "src/helpers/*.py" = [
   "D1", # undocumented-*
+]
+"test_*.py" = [
+  "no-self-use"
 ]
 
 # mypy
