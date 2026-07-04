@@ -11,8 +11,7 @@ from click_man.man import ManPage
 
 from viat.cli import viat
 
-
-ROOT = pathlib.Path(__file__).parent.parent.parent
+from .paths import ROOT
 
 
 def build_man_page() -> None:
