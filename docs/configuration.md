@@ -9,7 +9,7 @@ provider = "glob"  # can be set to "git"
 [tracker.glob]
 root = "."
 patterns = []
-provider = "NGB"  # See the documentation for wcmatch.glob
+flags = ['NEGATE', 'GLOBSTAR', 'BRACE']  # See the documentation for wcmatch.glob
 
 [tracker.git]
 repo_root = "."
