@@ -17,7 +17,7 @@ classifiers = [
   "Operating System :: OS Independent",
   "Topic :: Utilities",
   # The rest of the classifiers will hopefully be populated dynamically at some point
-  #   See https://github.com/astral-sh/uv/issues/8716
+  # A related issue for uv-build is <https://github.com/astral-sh/uv/issues/8716>
   "Typing :: Typed",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.12",
