@@ -18,7 +18,8 @@ def with_cli_exception_handler() -> Generator[None]:
         raise click.ClickException(err.get_human_readable_string()) from err
 
 
-def cli_warning_handler(warning: ViatWarning, stacklevel: int) -> bool:  # noqa: ARG001
+# ruff: ignore[unused-function-argument]
+def cli_warning_handler(warning: ViatWarning, stacklevel: int) -> bool:
     click.echo('Warning: ' + warning.get_human_readable_string(), err=True)
     return True
 

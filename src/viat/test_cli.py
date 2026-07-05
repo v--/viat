@@ -280,7 +280,8 @@ class TestMv:
             assert result.stderr == ''
 
         with vault_with_readme.storage as conn:
-            with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+            # ruff: ignore[multiple-with-statements]
+            with pytest.raises(ViatAttributeStorageError):
                 with conn.get_reader('README.md') as reader:
                     assert reader['key']
 
@@ -341,7 +342,8 @@ class TestRm:
 
         assert not readme.exists()
 
-        with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.raises(ViatAttributeStorageError):
             with vault_with_readme.storage as conn, conn.get_reader('README.md') as reader:
                 assert reader['key']
 
@@ -376,6 +378,7 @@ class TestShellExport:
             assert result.stdout == 'path=README.md str=value1 int=1 bool=false json=\'{"key": "value"}\'\n'
             assert result.stderr == ''
 
-        with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.raises(ViatAttributeStorageError):
             with vault_with_readme.storage as conn, conn.get_reader('README.md') as reader:
                 assert reader['key']

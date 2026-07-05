@@ -34,7 +34,8 @@ class TestTomlStorage:
         storage_path = temp_directory.joinpath('storage.toml')
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(storage_path))
 
-        with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.raises(ViatAttributeStorageError):
             with storage as _conn:
                 ...
 
@@ -133,7 +134,8 @@ class TestTomlStorage:
         storage_path.chmod(0o000)
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(storage_path))
 
-        with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.raises(ViatAttributeStorageError):
             with storage as _conn:
                 ...
 
@@ -142,7 +144,8 @@ class TestTomlStorage:
         storage_path.write_text('gibberish')
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(storage_path))
 
-        with pytest.raises(ViatMalformedStoredDataError):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.raises(ViatMalformedStoredDataError):
             with storage as _conn:
                 ...
 
@@ -172,7 +175,8 @@ class TestTomlStorage:
 
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(storage_path, schema_path))
 
-        with pytest.warns(ViatStoredDataValidationWarning):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.warns(ViatStoredDataValidationWarning):
             with storage as _conn:
                 ...
 
@@ -215,6 +219,7 @@ class TestTomlStorage:
         storage_path.touch()
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(storage_path))
 
-        with pytest.raises(ViatAttributeStorageError):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.raises(ViatAttributeStorageError):
             with storage as conn, conn.get_mutator('table') as mut:
                 mut['key'] = None

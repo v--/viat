@@ -1,4 +1,4 @@
-# ruff:file-ignore[unused-function-argument]
+# ruff: file-ignore[unused-function-argument]
 
 """This is a PEP-517 in-tree build backend that solves a chicken-and-egg problem.
 
@@ -15,12 +15,12 @@ from typing import TYPE_CHECKING
 
 import hatchling.build
 
-# ruff:ignore[unused-import]
+# ruff: ignore[unused-import]
 from hatchling.build import build_sdist, get_requires_for_build_sdist
 
 
 with contextlib.suppress(ImportError):
-    # ruff:ignore[unused-import]
+    # ruff: ignore[unused-import]
     from hatchling.build import (
         build_editable,
         get_requires_for_build_editable,
@@ -48,7 +48,7 @@ def build_wheel(
     config_settings: 'dict[str, JsonObjectT] | None' = None,
     metadata_directory: str | None = None,
 ) -> str:
-    # ruff:ignore[import-outside-top-level]
+    # ruff: ignore[import-outside-top-level]
     from .docs import build_man_page
     build_man_page()
     return hatchling.build.build_wheel(wheel_directory, config_settings, metadata_directory)

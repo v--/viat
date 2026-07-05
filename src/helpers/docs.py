@@ -93,7 +93,7 @@ def build_man_md() -> None:
     assert proc.stdout
     rendered = proc.stdout.read().decode('utf-8')
     # The replacement patterns are based on https://stackoverflow.com/a/78367016/2756776
-    # ruff:ignore[unraw-re-pattern]
+    # ruff: ignore[unraw-re-pattern]
     unescaped = re.sub('\x1B\\[[0-9;]*[JKmsu]', '', rendered)
 
     with open('docs/man.md', 'w', encoding='utf-8') as file:

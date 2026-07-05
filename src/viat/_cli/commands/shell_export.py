@@ -22,6 +22,7 @@ def is_valid_variable_name(name: str) -> bool:
 @click.pass_context
 @click.option('--path-var', type=str, default='path', help="Name of the variable storing the file's path.")
 def shell_export(ctx: click.Context, path_var: str) -> None:
+    # ruff: ignore[escape-sequence-in-docstring]
     """Print the attributes for all tracked files in a table suitable for shell scripting.
 
     We list only the attributes that correspond to valid variable names according to [a-zA-Z_][a-zA-Z_0-9]*.
@@ -30,7 +31,7 @@ def shell_export(ctx: click.Context, path_var: str) -> None:
     Example:
         path=path1 key1=value11 key2=value2
         path=path2 key1=value21 key2=value22
-    """  # noqa: D301
+    """
     if not is_valid_variable_name(path_var):
         raise ViatCliError(f'As a precaution, we disallow the string {path_var!r} as a variable.')
 

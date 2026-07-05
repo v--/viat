@@ -1,5 +1,6 @@
+# ruff: file-ignore[undocumented-magic-method]
+
 """Exceptions (errors and warnings) common to all modules."""
-# ruff: noqa: D105
 
 import contextlib
 import pathlib
@@ -18,7 +19,8 @@ class ViatException(Exception):
         return f'{self}.'
 
 
-class ValidationExceptionMixin(Exception):  # noqa: N818
+# ruff: ignore[error-suffix-on-exception-name]
+class ValidationExceptionMixin(Exception):
     """Mixin for exceptions related to validation."""
     __cause__: BaseException | None
 

@@ -28,12 +28,13 @@ class ViatFileTracker(Protocol):
         """
 
     def validate_tracked(self, path: pathlib.Path) -> None:
+        # ruff: ignore[missing-blank-line-after-summary]
         """Validate that a file is being tracked and emit and otherwise emit
         [`ViatUntrackedFileWarning`](viat.exceptions.ViatUntrackedFileWarning).
 
         Args:
             path: The file path.
-        """  # noqa: D205
+        """
 
 
 class ViatAttributeReader(Mapping[str, JsonT]):

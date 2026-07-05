@@ -50,7 +50,8 @@ class GlobFileTrackerConfig:
     flags: Sequence[str] = field(default_factory=lambda: DEFAULT_GLOB_FLAGS)
     """A sequence of strings corresponding to glob options."""
 
-    def __post_init__(self) -> None:  # noqa: D105
+    # ruff: ignore[undocumented-magic-method]
+    def __post_init__(self) -> None:
         validate_wcmatch_flags(self.flags)
 
 

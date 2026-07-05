@@ -41,7 +41,8 @@ class TestJsonStorage:
         schema_path.write_text(schema)
         storage = JsonAttributeStorage(JsonAttributeStorageConfig(storage_path, schema_path))
 
-        with pytest.warns(ViatStoredDataValidationWarning):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.warns(ViatStoredDataValidationWarning):
             with storage as _conn:
                 ...
 
@@ -66,6 +67,7 @@ class TestJsonStorage:
         schema_path.write_text(schema)
         storage = JsonAttributeStorage(JsonAttributeStorageConfig(storage_path, schema_path))
 
-        with pytest.raises(ViatValidationError):  # noqa: SIM117
+        # ruff: ignore[multiple-with-statements]
+        with pytest.raises(ViatValidationError):
             with storage as conn, conn.get_mutator('table') as mut:
                 mut['key'] = 3
