@@ -101,10 +101,6 @@ shared-data = { "dist/man/viat.1" = "share/man/man1/viat.1" }
 [tool.uv]
 resolution = "lowest-direct"
 
-# poe
-[tool.poe]
-include = "./poe.toml"
-
 # tox
 [tool.tox]
 env_list = ["lint", "typing", "3.12", "3.13", "3.14t", "3.15t"]

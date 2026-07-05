@@ -233,7 +233,7 @@ uv tool install viat --from dist/*.whl
 pipx install --include-deps dist/*.whl
 ```
 
-Tasks inside the repository like linting and testing use are summarized in [`poe.toml`](https://github.com/v--/viat/blob/master/poe.toml) (configuration for [poethepoet](https://pypi.org/project/poethepoet/)). For example, building the documentation requires some hacks internally, but is wrapped in a single command:
+Tasks inside the repository like linting and testing use are summarized in [`poe_tasks.toml`](https://github.com/v--/viat/blob/master/poe_tasks.toml) (configuration for [poethepoet](https://pypi.org/project/poethepoet/)). For example, building the documentation requires some hacks internally, but is wrapped in a single command:
 
 ```console
 uv run poe docs-build
