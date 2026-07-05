@@ -73,10 +73,10 @@ docs = [
   { include-group = "man" },
   "mkdocstrings-python (>=2)",
   "zensical (>=0.0.46)",
+  "poethepoet (>=0.45)",
 ]
 
 dev = [
-  "poethepoet (>=0.45)",
   "tox (>=4.50)",
   { include-group = "lint" },
   { include-group = "typing" },

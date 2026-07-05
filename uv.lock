@@ -963,6 +963,7 @@ dev = [
 docs = [
     { name = "click-man" },
     { name = "mkdocstrings-python" },
+    { name = "poethepoet" },
     { name = "zensical" },
 ]
 lint = [
@@ -1010,6 +1011,7 @@ dev = [
 docs = [
     { name = "click-man", specifier = ">=0.5.1" },
     { name = "mkdocstrings-python", specifier = ">=2" },
+    { name = "poethepoet", specifier = ">=0.45" },
     { name = "zensical", specifier = ">=0.0.46" },
 ]
 lint = [
