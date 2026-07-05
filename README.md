@@ -35,7 +35,7 @@ See also the [documentation on ReadTheDocs](https://viat.readthedocs.io/)
 
 ## Usage
 
-We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page [`viat(1)`](https://viat.readthedocs.io/en/stable/man/) for more details. The [`examples`](https://github.com/v--/viat/blob/master/examples) directory contains more thorough examples like scripts for managing dotfiles and bibliographies.
+We give a usage tutorial here; refer to the [online documentation](https://viat.readthedocs.io/) or to the man page [`viat(1)`](https://viat.readthedocs.io/en/stable/man/) (included in the wheels) for more details. The [`examples`](https://github.com/v--/viat/blob/master/examples) directory contains more thorough examples like scripts for managing dotfiles and bibliographies.
 
 ### Command-line usage
 
