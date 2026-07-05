@@ -51,7 +51,7 @@ viat = "viat.cli:viat"
 [dependency-groups]
 lint = [
   "ruff (>=0.15.20)",
-  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15.post8",
+  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15.post9",
 ]
 
 typing = [
@@ -128,9 +128,6 @@ preview = true
 ]
 "src/helpers/*.py" = [
   "D1", # undocumented-*
-]
-"test_*.py" = [
-  "no-self-use"
 ]
 
 # mypy

@@ -825,8 +825,8 @@ wheels = [
 
 [[package]]
 name = "ruff-config-ivasilev"
-version = "0.15.post8"
-source = { git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15.post8#07e6fc03edd387deef6cb9fcc36455bc288ee7a3" }
+version = "0.15.post9"
+source = { git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15.post9#24674ab37eb01ed90f8b67685dcf1232b96447d7" }
 
 [[package]]
 name = "six"
@@ -1003,7 +1003,7 @@ dev = [
     { name = "poethepoet", specifier = ">=0.45" },
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "ruff", specifier = ">=0.15.20" },
-    { name = "ruff-config-ivasilev", git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15.post8" },
+    { name = "ruff-config-ivasilev", git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15.post9" },
     { name = "tox", specifier = ">=4.50" },
     { name = "viat", extras = ["git"], specifier = ">=0.0.0" },
     { name = "zensical", specifier = ">=0.0.46" },
@@ -1016,7 +1016,7 @@ docs = [
 ]
 lint = [
     { name = "ruff", specifier = ">=0.15.20" },
-    { name = "ruff-config-ivasilev", git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15.post8" },
+    { name = "ruff-config-ivasilev", git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15.post9" },
 ]
 man = [{ name = "click-man", specifier = ">=0.5.1" }]
 test = [
