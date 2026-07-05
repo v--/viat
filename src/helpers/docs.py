@@ -1,5 +1,4 @@
 import io
-import pathlib
 import re
 import subprocess
 from inspect import cleandoc
@@ -11,12 +10,13 @@ from click_man.man import ManPage
 
 from viat.cli import viat
 
-from .paths import ROOT
+from .paths import MAN_FILE, ROOT
 
 
 def build_man_page() -> None:
+    MAN_FILE.parent.mkdir(parents=True, exist_ok=True)
+
     version, date_str = extract_version_and_date_from_changelog()
-    pathlib.Path('dist/man').mkdir(parents=True, exist_ok=True)
     extracted_readme_usage = extract_usage_from_readme(only_cli=True)
 
     # The following code is an variation of the generate_man_page function from
@@ -35,7 +35,7 @@ def build_man_page() -> None:
     ]
     click_man_page.date = date_str
 
-    with open('dist/man/viat.1', 'w', encoding='utf-8') as man_file:
+    with open(MAN_FILE, 'w', encoding='utf-8') as man_file:
         man_file.writelines(str(click_man_page))
         man_file.write('.SH COMMANDS\n')
 
@@ -83,20 +83,20 @@ def build_usage_md() -> None:
         .replace('#### ', '### ') \
         .replace('refer to the [online documentation](https://viat.readthedocs.io/) or to the man page', 'refer to the man page')
 
-    with open('docs/usage.md', 'w', encoding='utf-8') as file:
+    with open(ROOT / 'docs' / 'usage.md', 'w', encoding='utf-8') as file:
         file.write('# Usage\n\n')
         file.write(adapted_usage)
 
 
 def build_man_md() -> None:
-    proc = subprocess.Popen(['groff', '-mandoc', '-Tutf8', '-rLL=87n', 'dist/man/viat.1'], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(['groff', '-mandoc', '-Tutf8', '-rLL=87n', MAN_FILE.as_posix()], stdout=subprocess.PIPE)
     assert proc.stdout
     rendered = proc.stdout.read().decode('utf-8')
     # The replacement patterns are based on https://stackoverflow.com/a/78367016/2756776
     # ruff: ignore[unraw-re-pattern]
     unescaped = re.sub('\x1B\\[[0-9;]*[JKmsu]', '', rendered)
 
-    with open('docs/man.md', 'w', encoding='utf-8') as file:
+    with open(ROOT / 'docs' / 'man.md', 'w', encoding='utf-8') as file:
         file.write('```\n')
         file.write(unescaped)
         file.write('```\n')

@@ -16,15 +16,15 @@ classifiers = [
   "Environment :: Console",
   "Operating System :: OS Independent",
   "Topic :: Utilities",
+  "Programming Language :: Python :: Free Threading :: 3 - Stable",
   # The rest of the classifiers will hopefully be populated dynamically at some point
-  # A related issue for uv-build is <https://github.com/astral-sh/uv/issues/8716>
+  #   See https://github.com/astral-sh/uv/issues/8716
   "Typing :: Typed",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3.15",
-  "Programming Language :: Python :: Free Threading :: 3 - Stable",
 ]
 
 dependencies = [
@@ -57,7 +57,6 @@ lint = [
 typing = [
   { include-group = "test" },
   "mypy (>=2)",
-  "hatchling (>=1.27)",
 ]
 
 test = [
@@ -86,20 +85,19 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling (>=1.27)"]
+# uv build complains if no upper bound is set, but it updates its minor versions often, so we put a major version just to shut it up
+requires = ["uv_build (>=0.10, <1)"]
 build-backend = "helpers.build_backend"
 backend-path = ["src"]
-
-# hatch
-[tool.hatch.build.targets.sdist]
-include = ["/README.md", "/CHANGELOG.md", "/pyproject.toml", "/uv.lock", "/src"]
-
-[tool.hatch.build.targets.wheel]
-shared-data = { "dist/man/viat.1" = "share/man/man1/viat.1" }
 
 # uv
 [tool.uv]
 resolution = "lowest-direct"
+
+[tool.uv.build-backend]
+source-include = ["CHANGELOG.md", "src/helpers/*"]
+source-exclude = ["dist"]
+data = { data = "dist/data" }
 
 # tox
 [tool.tox]
@@ -138,5 +136,6 @@ packages = ["viat", "helpers"]
 module = [
   "click_man.*",
   "fastjsonschema.*",
+  "uv_build.*",
 ]
 ignore_missing_imports = true
