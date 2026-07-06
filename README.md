@@ -201,10 +201,15 @@ Refer to the [API reference](https://viat.readthedocs.io/en/stable/api/protocols
 
 The [`viat` PyPI package](https://pypi.org/project/viat/) contains the core programmatic API.
 
-To install the `viat` executable for the current user, you can use [`pipx`](https://pipx.pypa.io) or [`uv`](https://docs.astral.sh/uv/):
+To install the `viat` executable for the current user, you can use [`pipx`](https://pipx.pypa.io):
 
 ```console
 pipx install viat
+```
+
+An alternative is to use [`uv`](https://docs.astral.sh/uv/):
+
+```console
 uv tool install viat
 ```
 
@@ -213,13 +218,13 @@ The git tracker requires the `git` extra.
 To install from GitHub, you can use `uv`:
 
 ```console
-uv tool install viat --from git+https://github.com/v--/viat
+pipx install git+https://github.com/v--/viat
 ```
 
 Sometimes a particular feature branch needs to be tested. For installing a fixed revision (i.e. common/branch/tag), the following should work (if `extra-name` is needed, use `viat@rev[extra-name]`):
 
 ```console
-uv tool install viat --from git+https://github.com/v--/viat@rev
+pipx install git+https://github.com/v--/viat@rev
 ```
 
 To install `viat` from a cloned repository, you can use the following:

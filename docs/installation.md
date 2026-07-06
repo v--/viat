@@ -8,7 +8,7 @@ To install the `viat` executable for the current user, you can use [`pipx`](http
 pipx install viat
 ```
 
-or [`uv`](https://docs.astral.sh/uv/):
+An alternative is to use [`uv`](https://docs.astral.sh/uv/):
 
 ```console
 uv tool install viat
