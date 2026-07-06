@@ -6,6 +6,7 @@ site_dir = "dist/docs"
 site_url = "https://viat.readthedocs.io/"
 repo_url = "https://github.com/v--/viat"
 repo_name = "v--/viat"
+watch = ["README.md"]
 nav = [
   { "Index" = "index.md" },
   { "Installation" = "installation.md" },
@@ -39,6 +40,8 @@ show_symbol_type_heading = true
 show_symbol_type_toc = true
 unwrap_annotated = true
 relative_crossrefs = true
+
+[project.plugins.markdown-exec]
 
 [project.theme]
 # Zensical requires an explicit list of "theme features".

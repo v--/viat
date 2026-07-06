@@ -3,14 +3,8 @@
 > [!TIP]
 > These are source files. For the documentation itself, see <https://viat.readthedocs.io/>.
 
-This directory contains some documentation files to be used with [zensical](https://zensical.org/). Several markdown files are missing; these can be generated using
+This directory contains incomplete documentation files to be consumed by [zensical](https://zensical.org/):
 
 ```console
-uv run poe docs-aux
-```
-
-The entire documentation build process can be performed using
-
-```console
-uv run poe docs-build
+uv run zensical build
 ```

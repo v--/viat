@@ -11,7 +11,7 @@ build:
   jobs:
     build:
       html:
-        - uv run poe docs-build
+        - uv run zensical build
     post_build:
       - mkdir --parents $READTHEDOCS_OUTPUT/html/
       - cp --recursive dist/docs/* $READTHEDOCS_OUTPUT/html/

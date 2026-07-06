@@ -3,7 +3,7 @@ import re
 import subprocess
 from inspect import cleandoc
 from textwrap import dedent
-from typing import cast
+from typing import TextIO, cast
 
 import click
 from click_man.man import ManPage
@@ -13,9 +13,7 @@ from viat.cli import viat
 from .paths import MAN_FILE, ROOT
 
 
-def build_man_page() -> None:
-    MAN_FILE.parent.mkdir(parents=True, exist_ok=True)
-
+def write_man_page(sink: TextIO) -> None:
     version, date_str = extract_version_and_date_from_changelog()
     extracted_readme_usage = extract_usage_from_readme(only_cli=True)
 
@@ -35,47 +33,74 @@ def build_man_page() -> None:
     ]
     click_man_page.date = date_str
 
+    sink.writelines(str(click_man_page))
+    sink.write('.SH COMMANDS\n')
+
+    for subcommand in viat.commands.values():
+        subctx = click.Context(subcommand, info_name=f'viat {subcommand.name}')
+        subcommand_help = subcommand.get_help(subctx) \
+            .replace('Usage:', '.TP\n\\fB') \
+            .replace('Options:', '.IP\n\\fBOptions:\\fP') \
+            .replace('\n\n', '\n.IP\n') \
+            .replace('\n  ', '\n.br\n')
+
+        sink.write(subcommand_help)
+        sink.write('\n')
+
+    sink.write(
+        dedent("""\
+            .SH ENVIRONMENT
+            .TP
+            \\fBVIAT_DIR\\fP
+            Use a concrete vault directory than searching through the current directory upwards.
+            """,
+        ),
+    )
+
+    man_tutorial = re.sub(
+            r'```\w+',
+            '.IP',
+            re.sub(r'#### (?P<title>.*)', lambda match: '\\fB' + cast('str', match.group('title').upper()), extracted_readme_usage),
+        ) \
+        .replace('```', '\n.P\n') \
+        .replace('`', '"') \
+        .replace('\n\n', '\n.P\n') \
+        .replace('\n\n', '\n') \
+        .replace('\n', '\n.br\n')
+
+    sink.write('.SH TUTORIAL\n')
+    sink.writelines(man_tutorial)
+
+
+def build_man_page() -> None:
+    MAN_FILE.parent.mkdir(parents=True, exist_ok=True)
+
     with open(MAN_FILE, 'w', encoding='utf-8') as man_file:
-        man_file.writelines(str(click_man_page))
-        man_file.write('.SH COMMANDS\n')
-
-        for subcommand in viat.commands.values():
-            subctx = click.Context(subcommand, info_name=f'viat {subcommand.name}')
-            subcommand_help = subcommand.get_help(subctx) \
-                .replace('Usage:', '.TP\n\\fB') \
-                .replace('Options:', '.IP\n\\fBOptions:\\fP') \
-                .replace('\n\n', '\n.IP\n') \
-                .replace('\n  ', '\n.br\n')
-
-            man_file.write(subcommand_help)
-            man_file.write('\n')
-
-        man_file.write(
-            dedent("""\
-                .SH ENVIRONMENT
-                .TP
-                \\fBVIAT_DIR\\fP
-                Use a concrete vault directory than searching through the current directory upwards.
-                """,
-            ),
-        )
-
-        man_tutorial = re.sub(
-                r'```\w+',
-                '.IP',
-                re.sub(r'#### (?P<title>.*)', lambda match: '\\fB' + cast('str', match.group('title').upper()), extracted_readme_usage),
-            ) \
-            .replace('```', '\n.P\n') \
-            .replace('`', '"') \
-            .replace('\n\n', '\n.P\n') \
-            .replace('\n\n', '\n') \
-            .replace('\n', '\n.br\n')
-
-        man_file.write('.SH TUTORIAL\n')
-        man_file.writelines(man_tutorial)
+        write_man_page(man_file)
 
 
-def build_usage_md() -> None:
+def write_man_md(sink: TextIO) -> None:
+    buffer = io.StringIO()
+    write_man_page(buffer)
+
+    proc = subprocess.run(
+        ['groff', '-mandoc', '-Tutf8', '-rLL=87n'],
+        stdout=subprocess.PIPE,
+        input=buffer.getvalue(),
+        encoding='utf-8',
+        check=True,
+    )
+
+    # The replacement patterns are based on https://stackoverflow.com/a/78367016/2756776
+    # ruff: ignore[unraw-re-pattern]
+    unescaped = re.sub('\x1B\\[[0-9;]*[JKmsu]', '', proc.stdout)
+
+    sink.write('```\n')
+    sink.write(unescaped)
+    sink.write('```\n')
+
+
+def write_usage_md(sink: TextIO) -> None:
     extracted_usage = extract_usage_from_readme(only_cli=False)
 
     adapted_usage = extracted_usage \
@@ -83,23 +108,7 @@ def build_usage_md() -> None:
         .replace('#### ', '### ') \
         .replace('refer to the [online documentation](https://viat.readthedocs.io/) or to the man page', 'refer to the man page')
 
-    with open(ROOT / 'docs' / 'usage.md', 'w', encoding='utf-8') as file:
-        file.write('# Usage\n\n')
-        file.write(adapted_usage)
-
-
-def build_man_md() -> None:
-    proc = subprocess.Popen(['groff', '-mandoc', '-Tutf8', '-rLL=87n', MAN_FILE.as_posix()], stdout=subprocess.PIPE)
-    assert proc.stdout
-    rendered = proc.stdout.read().decode('utf-8')
-    # The replacement patterns are based on https://stackoverflow.com/a/78367016/2756776
-    # ruff: ignore[unraw-re-pattern]
-    unescaped = re.sub('\x1B\\[[0-9;]*[JKmsu]', '', rendered)
-
-    with open(ROOT / 'docs' / 'man.md', 'w', encoding='utf-8') as file:
-        file.write('```\n')
-        file.write(unescaped)
-        file.write('```\n')
+    sink.write(adapted_usage)
 
 
 def extract_version_and_date_from_changelog() -> tuple[str, str]:

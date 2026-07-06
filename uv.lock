@@ -329,6 +329,18 @@ wheels = [
 ]
 
 [[package]]
+name = "markdown-exec"
+version = "1.12.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pymdown-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/73/649eaf2cf93ad4b6065505f355b6f49982c2023ecdd0a6d0a92f06341527/markdown_exec-1.12.0.tar.gz", hash = "sha256:ed99a17832704ad0afcd938e2bb34cf461189abb23e8863cb8ec1f4a8944f169", size = 74170, upload-time = "2025-11-10T14:44:09.85Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f0/a3/216ac01195aa7e34b9e36cfeff2f7c6e1bf2a2c097e14269611fd7a35c62/markdown_exec-1.12.0-py3-none-any.whl", hash = "sha256:68aa9d7f7d005b309b14feed41f43187622ee97b0aabe03242754ff0bb71a532", size = 36074, upload-time = "2025-11-10T14:44:08.239Z" },
+]
+
+[[package]]
 name = "markupsafe"
 version = "3.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -925,6 +937,7 @@ git = [
 [package.dev-dependencies]
 dev = [
     { name = "click-man" },
+    { name = "markdown-exec" },
     { name = "mkdocstrings-python" },
     { name = "mypy" },
     { name = "poethepoet" },
@@ -937,8 +950,8 @@ dev = [
 ]
 docs = [
     { name = "click-man" },
+    { name = "markdown-exec" },
     { name = "mkdocstrings-python" },
-    { name = "poethepoet" },
     { name = "zensical" },
 ]
 lint = [
@@ -971,6 +984,7 @@ provides-extras = ["git"]
 [package.metadata.requires-dev]
 dev = [
     { name = "click-man", specifier = ">=0.5.1" },
+    { name = "markdown-exec", specifier = ">=1.12" },
     { name = "mkdocstrings-python", specifier = ">=2" },
     { name = "mypy", specifier = ">=2" },
     { name = "poethepoet", specifier = ">=0.45" },
@@ -983,8 +997,8 @@ dev = [
 ]
 docs = [
     { name = "click-man", specifier = ">=0.5.1" },
+    { name = "markdown-exec", specifier = ">=1.12" },
     { name = "mkdocstrings-python", specifier = ">=2" },
-    { name = "poethepoet", specifier = ">=0.45" },
     { name = "zensical", specifier = ">=0.0.47" },
 ]
 lint = [

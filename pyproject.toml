@@ -70,12 +70,13 @@ man = [
 
 docs = [
   { include-group = "man" },
+  "markdown-exec (>=1.12)",
   "mkdocstrings-python (>=2)",
   "zensical (>=0.0.47)",
-  "poethepoet (>=0.45)",
 ]
 
 dev = [
+  "poethepoet (>=0.45)",
   "tox (>=4.50)",
   { include-group = "lint" },
   { include-group = "typing" },

@@ -13,18 +13,11 @@ args = [
   { name = "path", positional = true, default = "" }
 ]
 
-[tasks.docs-server]
+[tasks.build-man]
+script = "src.helpers.docs:build_man_page"
+
+[tasks.build-docs]
+cmd = "zensical build"
+
+[tasks.serve-docs]
 cmd = "zensical serve"
-
-[tasks.docs-aux]
-sequence = [
-  { script = "src.helpers.docs:build_man_page" },
-  { script = "src.helpers.docs:build_usage_md" },
-  { script = "src.helpers.docs:build_man_md" },
-]
-
-[tasks.docs-build]
-sequence = [
-  { ref = "docs-aux" },
-  { cmd = "zensical build" },
-]
