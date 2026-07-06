@@ -71,7 +71,7 @@ man = [
 docs = [
   { include-group = "man" },
   "mkdocstrings-python (>=2)",
-  "zensical (>=0.0.46)",
+  "zensical (>=0.0.47)",
   "poethepoet (>=0.45)",
 ]
 
