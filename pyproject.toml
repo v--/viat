@@ -5,7 +5,7 @@ description = "A tool for managing virtual file attributes"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Unlicense"
-license-files = ["LICENSE"]
+license-files = ["LICENSES/Unlicense.txt"]
 
 authors = [
   { name = "Ianis Vasilev", email = "ianis@ivasilev.net" }
