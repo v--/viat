@@ -207,7 +207,7 @@ class TestTomlStorage:
 
         storage = TomlAttributeStorage(TomlAttributeStorageConfig(storage_path, schema_path))
 
-        with pytest.raises(ViatValidationError):  # noqa: SIM117
+        with pytest.raises(ViatValidationError):  # ruff: ignore[multiple-with-statements]
             with storage as conn, conn.get_mutator('table') as mut:
                 mut['key'] = 3
 

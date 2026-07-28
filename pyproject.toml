@@ -50,8 +50,8 @@ viat = "viat.cli:viat"
 
 [dependency-groups]
 lint = [
-  "ruff (>=0.15.20)",
-  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15.post9",
+  "ruff (>=0.16)",
+  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.16.post1",
 ]
 
 typing = [
