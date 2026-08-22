@@ -18,7 +18,7 @@ from .protocols import (
     ViatAttributeStorageConnection,
     ViatFileTracker,
 )
-from .vault import ViatVault, ViatVaultStaticConfig, autoload_vault
+from .vault import ViatVault, ViatVaultStaticConfig, autoload_vault, locate_existing_vault_root
 
 
 __all__ = [
