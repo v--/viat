@@ -12,22 +12,23 @@ nav = [
   { "Installation" = "installation.md" },
   { "Configuration" = "configuration.md" },
   { "Usage" = "usage.md" },
-  { "Man page" = "man.md" },
-  { "API Reference" = [
-    { "Protocols" = "api/protocols.md" },
-    { "Vault" = "api/vault.md" },
-    { "Exceptions" = "api/exceptions.md" },
-    { "Providers" = [
-      { "Tracker providers" = "api/providers/tracker.md" },
-      { "Storage providers" = "api/providers/storage.md" },
-    ] },
-    { "Support" = [
-      { "JSON" = "api/support/json.md" },
-    ] },
-  ] },
+  { "Man page" = "man.md" }
 ]
 
 # mkdocstrings
+[project.plugins.api-autonav]
+modules = ["src/viat"]
+exclude = [
+  "viat.cli",
+  "viat.conftest",
+  "viat.providers.storage.test_json",
+  "viat.providers.storage.test_toml",
+  "viat.providers.tracker.test_git",
+  "viat.providers.tracker.test_glob",
+  "viat.test_cli",
+  "viat.test_vault",
+]
+
 [project.plugins.mkdocstrings.handlers.python]
 inventories = ["https://docs.python.org/3/objects.inv"]
 paths = ["src"]
@@ -40,6 +41,7 @@ show_symbol_type_heading = true
 show_symbol_type_toc = true
 unwrap_annotated = true
 relative_crossrefs = true
+scoped_crossrefs = true
 
 [project.plugins.markdown-exec]
 

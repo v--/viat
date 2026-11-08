@@ -16,7 +16,7 @@ class ViatVault:
         root: The root path of the vault.
 
             To find a vault root from a subdirectory, you can use the helper
-            [`locate_existing_vault_root`][.locate_existing_vault_root].
+            [`locate_existing_vault_root`][..locate_existing_vault_root].
 
         static_config: Static configuration for the vault.
 

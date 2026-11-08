@@ -72,7 +72,7 @@ docs = [
   { include-group = "man" },
   "markdown-exec (>=1.12)",
   "mkdocstrings-python (>=2)",
-  "zensical (>=0.0.47)",
+  "zensical (>=0.1.0)",
 ]
 
 dev = [

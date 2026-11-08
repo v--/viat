@@ -11,7 +11,7 @@ class ViatPathResolver:
     Args:
         root: The root path of the vault.
 
-            To find a vault root from a subdirectory, you can use the [`locate`][.locate] factory method instead.
+            To find a vault root from a subdirectory, you can use the [`locate_existing_vault_root`][..locate_existing_vault_root] factory function instead.
 
     Raises:
         viat.exceptions.ViatConfigError: If the vault is misconfigured.
