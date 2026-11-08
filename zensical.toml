@@ -20,13 +20,8 @@ nav = [
 modules = ["src/viat"]
 exclude = [
   "viat.cli",
-  "viat.conftest",
-  "viat.providers.storage.test_json",
-  "viat.providers.storage.test_toml",
-  "viat.providers.tracker.test_git",
-  "viat.providers.tracker.test_glob",
-  "viat.test_cli",
-  "viat.test_vault",
+  "re:\\.conftest$",
+  "re:\\.test_.*$",
 ]
 
 [project.plugins.mkdocstrings.handlers.python]
